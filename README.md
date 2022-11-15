@@ -16,7 +16,7 @@
 > ```
 
 > Commit Convention
-> - feat, fix, docs, refactor, test, remove
+> - feat, fix, docs, refactor, test, remove, add
 > - 세부 내용 적기
 > 
 > ex)
