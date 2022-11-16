@@ -1,14 +1,12 @@
 import streamlit as st
 import cv2
-import json
 import os
 import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 from pycocotools.coco import COCO
-from collections import defaultdict
-from typing import List, Tuple
+from typing import List
 
 CLASSES = ["General trash", "Paper", "Paper pack", "Metal", "Glass", 
             "Plastic", "Styrofoam", "Plastic bag", "Battery", "Clothing"]
@@ -29,7 +27,6 @@ def set_data() -> pd.DataFrame:
     y_min = []
     x_max = []
     y_max = []
-
 
     for image_id in coco.getImgIds():
             
@@ -87,10 +84,24 @@ def draw_bbox(img: np.array, bboxes: List[list], check_list: List[bool]) -> np.a
     return img
 
 
+def open_tool(pre_label):
+    """
+    들어온 label을 선택된 label로 바꿔주는 함수
+    """
+    label_to_change = st.selectbox('choose label to changing', CLASSES)
+    current, change = st.columns(2)
+    with current:
+        st.write(f'current label: **{pre_label}**')
+    with change:
+        st.write(f'label will change: **{label_to_change}**')
+    
+    # 확인, 저장 버튼
+
 def make_vz_tab(df: pd.DataFrame):
     """
     사진 한 장씩 선택해서 원하는 카테고리의 bbox를 선택해서 볼 수 있는 탭    
     """
+    print('viz tab render')
     st.header('Data Analysis')
 
     group = df.groupby('image_id')
@@ -116,8 +127,14 @@ def make_vz_tab(df: pd.DataFrame):
     
     col1, col2 = st.columns([1, 3])
 
+    if 'open_tool' not in st.session_state:
+        st.session_state.open_tool = False
+
     with col1:
-        if st.button('choose item'):
+        if not st.session_state.open_tool:
+            st.session_state.open_tool = st.button('choose item')
+
+        if st.session_state.open_tool:
             idx, selected_id, selected_item = st.radio(
                 'Choose data what you change',
                 [(idx, b[0], CLASSES[b[1]]) for idx, b in enumerate(bboxes)]
@@ -126,6 +143,12 @@ def make_vz_tab(df: pd.DataFrame):
             img = cv2.rectangle(img, (x_min, y_min), (x_max, y_max), BLUE_COLOR, LINE_WEIGHT)
     with col2:
         st.image(img)
+
+    # select box로 변경할 class 설정
+    if st.session_state.open_tool:
+        open_tool(selected_item)
+    
+        
 
 
 def make_category_count_tab(df: pd.DataFrame):
@@ -150,6 +173,7 @@ st.set_page_config(layout="wide")
 st.title('Data Visualization')
 vz_tab, count_tab = st.tabs(['analysis', 'count'])
 df = set_data()
+print('render')
 with vz_tab:
     make_vz_tab(df)
 with count_tab:
