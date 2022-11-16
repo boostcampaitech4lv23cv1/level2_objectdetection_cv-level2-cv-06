@@ -7,17 +7,18 @@
 > - annotation(type hint) 사용
 > - 간단한 docstring 작성
 > - 기능 만들 때 feat/기능 내용으로 브랜치 명 작성
-> - 데이터 분석시 data/분석 내용으로 브랜치 명 작성
+> - 데이터 분석시 EDA/분석 내용으로 브랜치 명 작성
 > 
 > ex)
 > ```py
 > "feat/gethyperparams"
-> "data/rgb_analysis"
+> "EDA/rgb_analysis"
 > ```
 
 > Commit Convention
 > - feat, fix, docs, refactor, test, remove, add
 > - 세부 내용 적기
+> (fix는 오류or버그 고쳤을 때, refactor는 코드 수정했을 때)
 > 
 > ex)
 >  ```bash
