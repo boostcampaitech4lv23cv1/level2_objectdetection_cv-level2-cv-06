@@ -13,6 +13,7 @@ from typing import List, Tuple
 CLASSES = ["General trash", "Paper", "Paper pack", "Metal", "Glass", 
             "Plastic", "Styrofoam", "Plastic bag", "Battery", "Clothing"]
 RED_COLOR = (255, 0, 0)
+BLUE_COLOR = (0, 0, 255)
 LINE_WEIGHT = 2
 
 def set_data() -> pd.DataFrame:
@@ -23,10 +24,12 @@ def set_data() -> pd.DataFrame:
     image_ids = []
     class_name = []
     class_id = []
+    bbox_id = []
     x_min = []
     y_min = []
     x_max = []
     y_max = []
+
 
     for image_id in coco.getImgIds():
             
@@ -40,6 +43,7 @@ def set_data() -> pd.DataFrame:
             image_ids.append(file_name)
             class_name.append(CLASSES[ann['category_id']])
             class_id.append(ann['category_id'])
+            bbox_id.append(ann['id'])
             x_min.append(float(ann['bbox'][0]))
             y_min.append(float(ann['bbox'][1]))
             x_max.append(float(ann['bbox'][0]) + float(ann['bbox'][2]))
@@ -48,10 +52,12 @@ def set_data() -> pd.DataFrame:
     df['image_id'] = image_ids
     df['class_name'] = class_name
     df['class_id'] = class_id
+    df['bbox_id'] = bbox_id
     df['x_min'] = x_min
     df['y_min'] = y_min
     df['x_max'] = x_max
     df['y_max'] = y_max
+    
     return df
 
 
@@ -67,15 +73,15 @@ def make_checkbox(class_list: List[str], id_list: List[int]) -> List[bool]:
 
 def get_bbox(img_group: pd.DataFrame) -> List[list]:
     bboxes = []
-    for idx, row in img_group.iterrows():
-        c_id, x_min, y_min, x_max, y_max = row.class_id, row.x_min, row.y_min, row.x_max, row.y_max
-        bboxes.append([c_id, x_min, y_min, x_max, y_max])
+    for _, row in img_group.iterrows():
+        b_id, c_id, x_min, y_min, x_max, y_max = row.bbox_id, row.class_id, row.x_min, row.y_min, row.x_max, row.y_max
+        bboxes.append([b_id, c_id, x_min, y_min, x_max, y_max])
     return bboxes
 
 
 def draw_bbox(img: np.array, bboxes: List[list], check_list: List[bool]) -> np.array:
     for bbox in bboxes:
-        c_id, x_min, y_min, x_max, y_max = map(int, bbox)
+        _, c_id, x_min, y_min, x_max, y_max = map(int, bbox)
         if check_list[c_id]:
             img = cv2.rectangle(img, (x_min, y_min), (x_max, y_max), RED_COLOR, LINE_WEIGHT)
     return img
@@ -101,14 +107,25 @@ def make_vz_tab(df: pd.DataFrame):
         )
 
     st.write(f'img_path: {img_path}')
-
+    
     img = cv2.imread(os.path.join('../dataset/', img_path))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     
     bboxes = get_bbox(group.get_group(img_path))
     img = draw_bbox(img, bboxes, check_list)
     
-    st.image(img)
+    col1, col2 = st.columns([1, 3])
+
+    with col1:
+        if st.button('choose item'):
+            idx, selected_id, selected_item = st.radio(
+                'Choose data what you change',
+                [(idx, b[0], CLASSES[b[1]]) for idx, b in enumerate(bboxes)]
+            )
+            _, _, x_min, y_min, x_max, y_max = map(int, bboxes[idx])
+            img = cv2.rectangle(img, (x_min, y_min), (x_max, y_max), BLUE_COLOR, LINE_WEIGHT)
+    with col2:
+        st.image(img)
 
 
 def make_category_count_tab(df: pd.DataFrame):
@@ -129,6 +146,7 @@ def make_category_count_tab(df: pd.DataFrame):
 # 
 
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
+st.set_page_config(layout="wide")
 st.title('Data Visualization')
 vz_tab, count_tab = st.tabs(['analysis', 'count'])
 df = set_data()
