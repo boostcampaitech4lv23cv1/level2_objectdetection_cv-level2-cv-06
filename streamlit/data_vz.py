@@ -111,18 +111,16 @@ def make_vz_tab(df: pd.DataFrame):
     st.image(img)
 
 
-def make_category_count_tab():
+def make_category_count_tab(df: pd.DataFrame):
+    """
+    카테고리 별 bbox 갯수 시각화
+    """
     st.header('category_count')
-
-    with open('../dataset/train.json', 'r') as f:
-        data = json.load(f)
-        
-    data_annotations = data['annotations']
-    data_categories = data['categories']
-    cls_count = [0]*len(data_categories)
-
-    for anno in data_annotations:
-        cls_count[anno['category_id']] += 1
+    fig = plt.figure(figsize=(12, 8))
+    sns.countplot(
+        x=df.class_name
+    )
+    st.pyplot(fig)
 
 # 박스 크기
 
@@ -137,6 +135,6 @@ df = set_data()
 with vz_tab:
     make_vz_tab(df)
 with count_tab:
-    make_category_count_tab()
+    make_category_count_tab(df)
 # if __name__ == '__main__':
 #     run()
