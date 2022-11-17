@@ -25,6 +25,7 @@ RED_COLOR = (255, 0, 0)
 BLUE_COLOR = (0, 0, 255)
 LINE_WEIGHT = 2
 TRAIN_JSON = "../dataset/train_repair.json"
+assert os.path.exists(TRAIN_JSON), "check if train_repair.json exists"
 
 
 def set_data() -> pd.DataFrame:
