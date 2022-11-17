@@ -73,21 +73,21 @@ def get_class_name(class_id: int) -> str:
     return CLASSES[class_id]
 
 
-def make_checkbox(class_list: List[str]) -> List[bool]:
+def make_checkbox(id_list: List[str]) -> List[bool]:
     """
     Args:
-        class_list: 카테고리 list
+        id_list: class_id list
     
     Return:
         각 클래스별 checkbox 체크 여부 list
     """
     check_boxes = st.columns(5)
-    return_list = [False]*len(class_list)
-    for idx, class_name in enumerate(class_list):
+    return_list = [False]*len(id_list)
+    for idx, class_id in enumerate(id_list):
         with check_boxes[idx%5]:
+            class_name = get_class_name(class_id)
             check = st.checkbox(class_name, value=True)
 
-        class_id = get_class_id(class_name)
         return_list[class_id] = check
     return return_list
 
@@ -167,10 +167,7 @@ def make_vz_tab(df: pd.DataFrame):
         img_paths
     )
 
-    check_list = make_checkbox(
-        class_list=df.class_name.unique().tolist(),
-        id_list=df.class_id.unique().tolist()
-        )
+    check_list = make_checkbox(id_list=df.class_id.unique().tolist())
 
     st.write(f'img_path: {img_path}')
     
