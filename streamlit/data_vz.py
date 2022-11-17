@@ -1,6 +1,7 @@
 import streamlit as st
 import cv2
 import os
+import json
 import numpy as np
 import seaborn as sns
 import pandas as pd
@@ -13,9 +14,15 @@ CLASSES = ["General trash", "Paper", "Paper pack", "Metal", "Glass",
 RED_COLOR = (255, 0, 0)
 BLUE_COLOR = (0, 0, 255)
 LINE_WEIGHT = 2
+TRAIN_JSON = '../dataset/train_repair.json'
 
 def set_data() -> pd.DataFrame:
-    coco = COCO('../dataset/train.json')
+    """데이터 설정
+
+    Return:
+        coco format의 train.json의 annotations들을 하나의 행으로 하는 데이터프레임
+    """
+    coco = COCO(TRAIN_JSON)
 
     df = pd.DataFrame()
 
@@ -58,17 +65,41 @@ def set_data() -> pd.DataFrame:
     return df
 
 
-def make_checkbox(class_list: List[str], id_list: List[int]) -> List[bool]:
+def get_class_id(class_name: str) -> int:
+    return CLASSES.index(class_name)
+
+
+def get_class_name(class_id: int) -> str:
+    return CLASSES[class_id]
+
+
+def make_checkbox(class_list: List[str]) -> List[bool]:
+    """
+    Args:
+        class_list: 카테고리 list
+    
+    Return:
+        각 클래스별 checkbox 체크 여부 list
+    """
     check_boxes = st.columns(5)
     return_list = [False]*len(class_list)
-    for idx, (class_name, class_id) in enumerate(zip(class_list, id_list)):
+    for idx, class_name in enumerate(class_list):
         with check_boxes[idx%5]:
             check = st.checkbox(class_name, value=True)
+
+        class_id = get_class_id(class_name)
         return_list[class_id] = check
     return return_list
 
 
 def get_bbox(img_group: pd.DataFrame) -> List[list]:
+    """
+    Args:
+        img_group: 이미지 별로 gropu화 된 데이터 프레임
+
+    Returns:
+        annotation id, class id 및 bbox크기를 원소로 하는 list
+    """
     bboxes = []
     for _, row in img_group.iterrows():
         b_id, c_id, x_min, y_min, x_max, y_max = row.bbox_id, row.class_id, row.x_min, row.y_min, row.x_max, row.y_max
@@ -77,6 +108,15 @@ def get_bbox(img_group: pd.DataFrame) -> List[list]:
 
 
 def draw_bbox(img: np.array, bboxes: List[list], check_list: List[bool]) -> np.array:
+    """
+    Args:
+        img: 이미지
+        bboxes: bbox의 id 및 크기를 담은 list
+        check_list: 클래스 가시 여부
+
+    Return:
+        check_list에 해당하는 bbox들이 그려진 이미지
+    """
     for bbox in bboxes:
         _, c_id, x_min, y_min, x_max, y_max = map(int, bbox)
         if check_list[c_id]:
@@ -84,24 +124,39 @@ def draw_bbox(img: np.array, bboxes: List[list], check_list: List[bool]) -> np.a
     return img
 
 
-def open_tool(pre_label):
-    """
-    들어온 label을 선택된 label로 바꿔주는 함수
+def change_label(item_id: int, pre_label: str):
+    """들어온 label을 선택된 label로 바꿔주는 함수
+    Args:
+        item_id: 바꿀 bbox label의 id
+        pre_label: 바꾸기 전의 label
     """
     label_to_change = st.selectbox('choose label to changing', CLASSES)
     current, change = st.columns(2)
+
     with current:
         st.write(f'current label: **{pre_label}**')
     with change:
         st.write(f'label will change: **{label_to_change}**')
     
-    # 확인, 저장 버튼
+    # 바꾸기 버튼 누르면 동작
+    if st.button('Are you sure you want to change the label?'):
+
+        with open(TRAIN_JSON) as f:
+            data = json.load(f)
+    
+        data['annotations'][item_id]['category_id'] = CLASSES.index(label_to_change)
+
+        with open(TRAIN_JSON, 'w') as f:
+            json.dump(data, f, indent=2)
+
+        st.write('modify complete!')
+
 
 def make_vz_tab(df: pd.DataFrame):
+    """사진 한 장씩 선택해서 원하는 카테고리의 bbox를 선택해서 볼 수 있는 탭 
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
     """
-    사진 한 장씩 선택해서 원하는 카테고리의 bbox를 선택해서 볼 수 있는 탭    
-    """
-    print('viz tab render')
     st.header('Data Analysis')
 
     group = df.groupby('image_id')
@@ -141,19 +196,18 @@ def make_vz_tab(df: pd.DataFrame):
             )
             _, _, x_min, y_min, x_max, y_max = map(int, bboxes[idx])
             img = cv2.rectangle(img, (x_min, y_min), (x_max, y_max), BLUE_COLOR, LINE_WEIGHT)
+
     with col2:
         st.image(img)
 
-    # select box로 변경할 class 설정
     if st.session_state.open_tool:
-        open_tool(selected_item)
+        change_label(selected_id, selected_item)
     
-        
-
 
 def make_category_count_tab(df: pd.DataFrame):
-    """
-    카테고리 별 bbox 갯수 시각화
+    """카테고리 별 bbox 갯수 시각화
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
     """
     st.header('category_count')
     fig = plt.figure(figsize=(12, 8))
@@ -173,7 +227,6 @@ st.set_page_config(layout="wide")
 st.title('Data Visualization')
 vz_tab, count_tab = st.tabs(['analysis', 'count'])
 df = set_data()
-print('render')
 with vz_tab:
     make_vz_tab(df)
 with count_tab:
