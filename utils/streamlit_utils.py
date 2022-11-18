@@ -24,6 +24,7 @@ BLUE_COLOR = (0, 0, 255)
 LINE_WEIGHT = 2
 TRAIN_JSON = "../dataset/train_repair.json"
 CHANGED_LABELS = "../streamlit/repair.json"
+STATE = False
 assert os.path.exists(TRAIN_JSON), "check if train_repair.json exists"
 
 
@@ -133,13 +134,22 @@ def draw_bbox(img: np.array, bboxes: List[list], check_list: List[bool]) -> np.a
         check_list: 클래스 가시 여부
 
     Return:
-        check_list에 해당하는 bbox들이 그려진 이미지
+        check_list에 해당하는 bbox와 label들이 그려진 이미지
     """
     for bbox in bboxes:
         _, c_id, x_min, y_min, x_max, y_max = map(int, bbox)
         if check_list[c_id]:
             img = cv2.rectangle(
                 img, (x_min, y_min), (x_max, y_max), RED_COLOR, LINE_WEIGHT
+            )
+            img = cv2.putText(
+                img,
+                get_class_name(c_id),
+                (x_min, y_min - 10),
+                cv2.FONT_ITALIC,
+                1,
+                RED_COLOR,
+                LINE_WEIGHT,
             )
     return img
 
@@ -180,3 +190,7 @@ def change_label(item_id: int, pre_label: str):
             json.dump(log_data, f, indent=2)
 
         st.write("modify complete!")
+
+
+def button_on_click():
+    STATE = not STATE

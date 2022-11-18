@@ -37,14 +37,9 @@ def label_fix_tab(df: pd.DataFrame):
 
     col1, col2 = st.columns([1, 3])
 
-    if "open_tool" not in st.session_state:
-        st.session_state.open_tool = False
-
     with col1:
-        if not st.session_state.open_tool:
-            st.session_state.open_tool = st.button("choose item")
-
-        if st.session_state.open_tool:
+        state = st.button("choose item")
+        if state:
             idx, selected_id, selected_item = st.radio(
                 "Choose data what you change",
                 [(idx, b[0], CLASSES[b[1]]) for idx, b in enumerate(bboxes)],
@@ -67,7 +62,7 @@ def label_fix_tab(df: pd.DataFrame):
     with col2:
         st.image(img)
 
-    if st.session_state.open_tool:
+    if state:
         change_label(selected_id, selected_item)
 
 
