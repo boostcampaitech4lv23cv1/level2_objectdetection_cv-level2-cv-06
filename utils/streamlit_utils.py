@@ -85,7 +85,7 @@ def get_class_name(class_id: int) -> str:
     return CLASSES[class_id]
 
 
-def make_checkbox(id_list: List[str]) -> List[bool]:
+def make_checkbox(id_list: List[int]) -> List[bool]:
     """
     Args:
         id_list: class_id list
@@ -94,11 +94,14 @@ def make_checkbox(id_list: List[str]) -> List[bool]:
         각 클래스별 checkbox 체크 여부 list
     """
     check_boxes = st.columns(5)
-    return_list = [False] * len(id_list)
-    for idx, class_id in enumerate(id_list):
+    return_list = [False] * len(CLASSES)
+    for idx, class_name in enumerate(CLASSES):
         with check_boxes[idx % 5]:
-            class_name = get_class_name(class_id)
-            check = st.checkbox(class_name, value=True)
+            class_id = get_class_id(class_name)
+            if class_id in id_list:
+                check = st.checkbox(class_name, value=True)
+            else:
+                check = st.checkbox(class_name, value=False, disabled=True)
 
         return_list[class_id] = check
     return return_list
@@ -168,7 +171,7 @@ def change_label(item_id: int, pre_label: str):
     with change:
         st.write(f"label will change: **{label_to_change}**")
 
-    if st.button("Are you sure you want to change the label?"):
+    if st.button("Are you sure you want to change the label?", on_click=show_log):
 
         class_id = get_class_id(label_to_change)
 
@@ -189,11 +192,13 @@ def change_label(item_id: int, pre_label: str):
             log_data.update({str(item_id): class_id})
             json.dump(log_data, f, indent=2)
 
-        st.write("modify complete!")
-
 
 def change_state():
     try:
         st.session_state.state = not st.session_state.state
     except:
         print("not exist session variable")
+
+
+def show_log():
+    st.write("modify complete!")
