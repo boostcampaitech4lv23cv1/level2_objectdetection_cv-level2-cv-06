@@ -8,6 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pycocotools.coco import COCO
 from typing import List
+from transform import *
 
 CLASSES = [
     "General trash",
@@ -98,7 +99,7 @@ def make_checkbox(id_list: List[str]) -> List[bool]:
     for idx, class_id in enumerate(id_list):
         with check_boxes[idx % 5]:
             class_name = get_class_name(class_id)
-            check = st.checkbox(class_name, value=True)
+            check = st.checkbox(class_name, value=True, key=class_id)
 
         return_list[class_id] = check
     return return_list
@@ -143,6 +144,27 @@ def draw_bbox(img: np.array, bboxes: List[list], check_list: List[bool]) -> np.a
                 img, (x_min, y_min), (x_max, y_max), RED_COLOR, LINE_WEIGHT
             )
     return img
+
+
+def draw_aug_img(img, bboxes):
+    new_bboxes = []
+    for bbox in bboxes:
+        cobox = list(np.array(bbox[2:]) - np.array([0, 0, bbox[2:][0], bbox[2:][1]]))
+        new_bboxes.append(cobox)
+
+    transformed = soft_aug()(image=img, bboxes=new_bboxes, class_names=[""])
+    for box in transformed["bboxes"]:
+        x_min, y_min, w, h = list(map(int, box))
+        x_max, y_max = x_min + w, y_min + h
+        transformed["image"] = cv2.rectangle(
+            transformed["image"],
+            (x_min, y_min),
+            (x_max, y_max),
+            BLUE_COLOR,
+            LINE_WEIGHT,
+        )
+
+    return transformed["image"]
 
 
 def change_label(item_id: int, pre_label: str):
@@ -219,6 +241,7 @@ def make_vz_tab(df: pd.DataFrame):
 
     if st.session_state.open_tool:
         change_label(selected_id, selected_item)
+    return check_list
 
 
 def make_category_count_tab(df: pd.DataFrame):
@@ -232,6 +255,41 @@ def make_category_count_tab(df: pd.DataFrame):
     st.pyplot(fig)
 
 
+def make_aug_result_tab(df: pd.DataFrame, check_list: List[bool]):
+    """사진 한 장씩 선택해서 작성한 augmentation 결과를 볼 수 있는 탭
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+    """
+    st.header("Augmentation Result")
+
+    group = df.groupby("image_id")
+    img_paths = group.groups.keys()
+
+    img_path = st.selectbox("choose images", img_paths)
+
+    st.write(f"img_path: {img_path}")
+
+    img = cv2.imread(os.path.join("../dataset/", img_path))
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    bboxes = get_bbox(group.get_group(img_path))
+    img_bbox = draw_bbox(img.copy(), bboxes, check_list)
+
+    col1, col2 = st.columns([1, 1])
+
+    if "open_tool" not in st.session_state:
+        st.session_state.open_tool = False
+
+    with col1:
+        st.write("Original Image")
+        st.image(img_bbox)
+
+    with col2:
+        aug_img = draw_aug_img(img, bboxes)
+        st.write("Augmented Image")
+        st.image(aug_img)
+
+
 # 박스 크기
 
 # 사진별 카테고리 포함 여부 분포
@@ -241,11 +299,11 @@ def make_category_count_tab(df: pd.DataFrame):
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
 st.set_page_config(layout="wide")
 st.title("Data Visualization")
-vz_tab, count_tab = st.tabs(["analysis", "count"])
+vz_tab, count_tab, aug_tab = st.tabs(["analysis", "count", "augmentation"])
 df = set_data()
 with vz_tab:
-    make_vz_tab(df)
+    check_list = make_vz_tab(df)
 with count_tab:
     make_category_count_tab(df)
-# if __name__ == '__main__':
-#     run()
+with aug_tab:
+    make_aug_result_tab(df, check_list)
