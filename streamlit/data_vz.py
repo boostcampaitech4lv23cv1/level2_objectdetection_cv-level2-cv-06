@@ -144,10 +144,15 @@ def make_bbox_count_tab(df: pd.DataFrame):
 
     coco = COCO("../dataset/train.json")
     nums = []
+    max_bbox = 0
+    max_img = 0
     for image_id in coco.getImgIds():
         image_info = coco.loadImgs(image_id)[0]
         ann_ids = coco.getAnnIds(imgIds=image_info["id"])
         anns = coco.loadAnns(ann_ids)
+        if len(anns) > max_bbox:
+            max_img = image_id
+            max_bbox = len(anns)
         nums.append(len(anns))
     fig = plt.figure(figsize=(12, 8))
     plt.hist(nums, bins=70)
@@ -163,13 +168,15 @@ def make_bbox_count_tab(df: pd.DataFrame):
             dic[num] += 1
 
     mode = sorted(dic.items(), key=lambda x: x[1])[-1][0]
+
     st.pyplot(fig)
-    st.write(f"max_value: {max(nums)}")
-    st.write(f"min_value: {min(nums)}")
-    st.write(f"mode: {mode}")
+    st.write(f"max_bbox_num: {max(nums)}")
+    st.write(f"min_bbox_num: {min(nums)}")
+    st.write(f"mode_bbox_num: {mode}")
+    st.write(f"max_bbox_img: {max_img}")
 
     fig = plt.figure(figsize=(12, 8))
-    plt.hist(nums, bins=20, range=(1, 21))
+    plt.hist(nums, bins=20, range=(0, 21))
     plt.title("1~20_distribution")
     plt.xlabel("bbox_num")
     plt.ylabel("image_num")
