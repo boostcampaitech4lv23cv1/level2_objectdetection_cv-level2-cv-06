@@ -186,12 +186,14 @@ def change_label(item_id: int, pre_label: str):
         with open(CHANGED_LABELS, "r") as f:
             log_data = json.load(f)
         with open(CHANGED_LABELS, "w") as f:
-            log_data.update({item_id: class_id})
+            log_data.update({str(item_id): class_id})
             json.dump(log_data, f, indent=2)
 
         st.write("modify complete!")
-        st.session_state.state = False
 
 
-def button_on_click():
-    STATE = not STATE
+def change_state():
+    try:
+        st.session_state.state = not st.session_state.state
+    except:
+        print("not exist session variable")

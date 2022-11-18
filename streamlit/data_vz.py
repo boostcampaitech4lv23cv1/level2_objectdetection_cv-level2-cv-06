@@ -41,11 +41,9 @@ def label_fix_tab(df: pd.DataFrame):
 
     with col1:
         if not st.session_state.state:
-            if st.button("choose item"):
-                st.session_state.state = True
+            st.button("choose item", on_click=change_state)
         else:
-            if st.button("close"):
-                st.session_state.state = False
+            st.button("close", on_click=change_state)
 
         if st.session_state.state:
             idx, selected_id, selected_item = st.radio(
