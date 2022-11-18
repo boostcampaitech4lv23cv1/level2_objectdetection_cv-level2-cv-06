@@ -7,10 +7,7 @@ def soft_aug():
         [
             A.HorizontalFlip(p=1.0),
             A.RandomBrightnessContrast(p=1.0),
-        ],
-        bbox_params=A.BboxParams(
-            format="coco", label_fields=["class_names"], min_area=0, min_visibility=0
-        ),
+        ]
     )
 
 
@@ -39,8 +36,5 @@ def hard_aug():
                 min_width=3,
                 p=0.3,
             ),
-        ],
-        bbox_params=A.BboxParams(
-            format="coco", label_fields=["class_names"], min_area=0, min_visibility=0
-        ),
+        ]
     )

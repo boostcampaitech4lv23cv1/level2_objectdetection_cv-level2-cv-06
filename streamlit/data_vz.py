@@ -146,24 +146,8 @@ def draw_bbox(img: np.array, bboxes: List[list], check_list: List[bool]) -> np.a
     return img
 
 
-def draw_aug_img(img, bboxes):
-    new_bboxes = []
-    for bbox in bboxes:
-        cobox = list(np.array(bbox[2:]) - np.array([0, 0, bbox[2:][0], bbox[2:][1]]))
-        new_bboxes.append(cobox)
-
-    transformed = soft_aug()(image=img, bboxes=new_bboxes, class_names=[""])
-    for box in transformed["bboxes"]:
-        x_min, y_min, w, h = list(map(int, box))
-        x_max, y_max = x_min + w, y_min + h
-        transformed["image"] = cv2.rectangle(
-            transformed["image"],
-            (x_min, y_min),
-            (x_max, y_max),
-            BLUE_COLOR,
-            LINE_WEIGHT,
-        )
-
+def draw_aug_img(img):
+    transformed = soft_aug()(image=img)
     return transformed["image"]
 
 
@@ -285,7 +269,7 @@ def make_aug_result_tab(df: pd.DataFrame, check_list: List[bool]):
         st.image(img_bbox)
 
     with col2:
-        aug_img = draw_aug_img(img, bboxes)
+        aug_img = draw_aug_img(img)
         st.write("Augmented Image")
         st.image(aug_img)
 
