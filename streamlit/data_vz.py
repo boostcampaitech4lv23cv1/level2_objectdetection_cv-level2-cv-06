@@ -36,10 +36,18 @@ def label_fix_tab(df: pd.DataFrame):
     img = draw_bbox(img, bboxes, check_list)
 
     col1, col2 = st.columns([1, 3])
+    if "state" not in st.session_state:
+        st.session_state.state = False
 
     with col1:
-        state = st.button("choose item")
-        if state:
+        if not st.session_state.state:
+            if st.button("choose item"):
+                st.session_state.state = True
+        else:
+            if st.button("close"):
+                st.session_state.state = False
+
+        if st.session_state.state:
             idx, selected_id, selected_item = st.radio(
                 "Choose data what you change",
                 [(idx, b[0], CLASSES[b[1]]) for idx, b in enumerate(bboxes)],
@@ -62,7 +70,7 @@ def label_fix_tab(df: pd.DataFrame):
     with col2:
         st.image(img)
 
-    if state:
+    if st.session_state.state:
         change_label(selected_id, selected_item)
 
 

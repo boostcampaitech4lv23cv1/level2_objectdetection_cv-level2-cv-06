@@ -190,6 +190,7 @@ def change_label(item_id: int, pre_label: str):
             json.dump(log_data, f, indent=2)
 
         st.write("modify complete!")
+        st.session_state.state = False
 
 
 def button_on_click():
