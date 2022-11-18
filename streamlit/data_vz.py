@@ -1,11 +1,12 @@
 import streamlit as st
 import cv2
-import json
 import os
+import json
 import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
+<<<<<<< HEAD
 from pycocotools.coco import COCO
 from collections import defaultdict
 from typing import List, Tuple
@@ -103,6 +104,19 @@ def draw_bbox(img: np.array, bboxes: List[list], check_list: List[bool]) -> np.a
 def make_vz_tab(df: pd.DataFrame):
     """
     사진 한 장씩 선택해서 원하는 카테고리의 bbox를 선택해서 볼 수 있는 탭
+=======
+from typing import List
+import sys
+
+sys.path.append("../")
+from utils.streamlit_utils import *
+
+
+def label_fix_tab(df: pd.DataFrame):
+    """사진 한 장씩 선택해서 원하는 카테고리의 bbox를 선택해서 볼 수 있는 탭
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+>>>>>>> f1b1ad03c94ee631bc7a8181965ac203f977992f
     """
     st.header("Data Analysis")
 
@@ -111,10 +125,14 @@ def make_vz_tab(df: pd.DataFrame):
 
     img_path = st.selectbox("choose image", img_paths)
 
+<<<<<<< HEAD
     check_list = make_checkbox(
         class_list=df.class_name.unique().tolist(),
         id_list=df.class_id.unique().tolist(),
     )
+=======
+    check_list = make_checkbox(id_list=df.class_id.unique().tolist())
+>>>>>>> f1b1ad03c94ee631bc7a8181965ac203f977992f
 
     st.write(f"img_path: {img_path}")
 
@@ -124,11 +142,53 @@ def make_vz_tab(df: pd.DataFrame):
     bboxes = get_bbox(group.get_group(img_path))
     img = draw_bbox(img, bboxes, check_list)
 
+<<<<<<< HEAD
     st.image(img)
+=======
+    col1, col2 = st.columns([1, 3])
+    if "state" not in st.session_state:
+        st.session_state.state = False
+
+    with col1:
+        if not st.session_state.state:
+            st.button("choose item", on_click=change_state)
+        else:
+            st.button("close", on_click=change_state)
+
+        if st.session_state.state:
+            idx, selected_id, selected_item = st.radio(
+                "Choose data what you change",
+                [(idx, b[0], CLASSES[b[1]]) for idx, b in enumerate(bboxes)],
+                format_func=lambda x: f"bbox_id: {x[1]} | class_name: {x[2]}",
+            )
+            _, _, x_min, y_min, x_max, y_max = map(int, bboxes[idx])
+            img = cv2.rectangle(
+                img, (x_min, y_min), (x_max, y_max), BLUE_COLOR, LINE_WEIGHT
+            )
+            img = cv2.putText(
+                img,
+                selected_item,
+                (x_min, y_min - 10),
+                cv2.FONT_ITALIC,
+                1,
+                BLUE_COLOR,
+                LINE_WEIGHT,
+            )
+
+    with col2:
+        st.image(img)
+
+    if st.session_state.state:
+        change_label(selected_id, selected_item)
+>>>>>>> f1b1ad03c94ee631bc7a8181965ac203f977992f
 
 
 def make_category_count_tab(df: pd.DataFrame):
+    """카테고리 별 bbox 갯수 시각화
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
     """
+<<<<<<< HEAD
     카테고리 별 bbox 갯수 시각화
     """
     st.header("category_count")
@@ -169,6 +229,11 @@ def make_bbox_count_tab(df: pd.DataFrame):
 
     mode = sorted(dic.items(), key=lambda x: x[1])[-1][0]
 
+=======
+    st.header("category_count")
+    fig = plt.figure(figsize=(12, 8))
+    sns.countplot(x=df.class_name)
+>>>>>>> f1b1ad03c94ee631bc7a8181965ac203f977992f
     st.pyplot(fig)
     st.write(f"max_bbox_num: {max(nums)}")
     st.write(f"min_bbox_num: {min(nums)}")
@@ -190,6 +255,7 @@ def make_bbox_count_tab(df: pd.DataFrame):
     st.pyplot(fig)
 
 
+<<<<<<< HEAD
 # 박스 크기
 
 # 사진별 카테고리 포함 여부 분포
@@ -199,9 +265,16 @@ def make_bbox_count_tab(df: pd.DataFrame):
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
 st.title("Data Visualization")
 vz_tab, count_tab, bbox_count_tab = st.tabs(["analysis", "count", "bbox_count"])
+=======
+
+# 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
+st.set_page_config(layout="wide")
+st.title("Data Visualization")
+vz_tab, count_tab = st.tabs(["analysis", "count"])
+>>>>>>> f1b1ad03c94ee631bc7a8181965ac203f977992f
 df = set_data()
 with vz_tab:
-    make_vz_tab(df)
+    label_fix_tab(df)
 with count_tab:
     make_category_count_tab(df)
 with bbox_count_tab:
