@@ -145,10 +145,62 @@ def make_bbox_count_tab(df: pd.DataFrame):
     st.pyplot(fig)
 
 
+def make_bboxes_proportion_tab(df: pd.DataFrame):
+    """
+    이미지 별 이미지의 bboxes가 이미지 전체에서 차지하는 비율 분포 시각화
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+    """
+
+    st.header("bboxes_proportion")
+    df_length = len(df)
+    image_ids = df["image_id"]
+    image_length = len(set(image_ids))
+    total_pixels = np.zeros((image_length, 1024, 1024), dtype=bool)
+    pixel_num = 1024 * 1024
+    proportions = []
+    pre_img_id = image_ids[0]
+    now_img = 0
+    min_proportion = 100
+    min_proportion_img = 0
+    max_proportion = 0
+    max_proportion_img = 0
+
+    for i in range(df_length):
+        image_id = image_ids[i]
+        if pre_img_id != image_id:
+            proportion = ((np.sum(total_pixels[now_img])) / pixel_num) * 100
+            proportions.append(proportion)
+            if proportion > max_proportion:
+                max_proportion = proportion
+                max_proportion_img = pre_img_id
+            elif proportion < min_proportion:
+                min_proportion = proportion
+                min_proportion_img = pre_img_id
+            pre_img_id = image_id
+            now_img += 1
+            proportion = 0
+        x_min, y_min, x_max, y_max = df.iloc[i][4:8].map(int)
+        total_pixels[now_img, x_min : x_max + 1, y_min : y_max + 1] = 1
+
+    if proportion != 0:
+        proportions.append(proportion)
+
+    fig = plt.figure(figsize=(12, 8))
+    sns.histplot(proportions, bins=100)
+    plt.xlabel("proportion(%)")
+    st.pyplot(fig)
+    st.write(f"min proportion : {min_proportion:.2f}%({min_proportion_img})")
+    st.write(f"max proportion : {max_proportion:.2f}%({max_proportion_img})")
+    st.write(time.time() - start)
+
+
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
 st.set_page_config(layout="wide")
 st.title("Data Visualization")
-vz_tab, count_tab, bbox_count_tab = st.tabs(["analysis", "count", "bbox_count"])
+vz_tab, count_tab, bbox_count_tab, bboxes_proportion_tab = st.tabs(
+    ["analysis", "count", "bbox_count", "bbox_proportion"]
+)
 df = set_data()
 with vz_tab:
     label_fix_tab(df)
@@ -156,6 +208,9 @@ with count_tab:
     make_category_count_tab(df)
 with bbox_count_tab:
     make_bbox_count_tab(df)
+with bboxes_proportion_tab:
+    make_bboxes_proportion_tab(df)
+
 
 # if __name__ == '__main__':
 #     run()
