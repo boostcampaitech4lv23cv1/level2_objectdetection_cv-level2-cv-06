@@ -7,6 +7,8 @@ import json
 import numpy as np
 from typing import List
 from utils.transform import *
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 CLASSES = [
     "General trash",
@@ -251,3 +253,46 @@ def change_state():
 
 def show_log():
     st.write("modify complete!")
+
+
+def make_bboxes_proportion_tab(df: pd.DataFrame):
+    st.header("bboxes_proportion")
+    df_length = len(df)
+    image_ids = df["image_id"]
+    image_length = len(set(image_ids))
+    total_pixels = np.zeros((image_length, 1024, 1024), dtype=bool)
+    pixel_num = 1024 * 1024
+    proportions = []
+    pre_img_id = image_ids[0]
+    now_img = 0
+    min_proportion = 100
+    min_proportion_img = 0
+    max_proportion = 0
+    max_proportion_img = 0
+
+    for i in range(df_length):
+        image_id = image_ids[i]
+        if pre_img_id != image_id:
+            proportion = ((np.sum(total_pixels[now_img])) / pixel_num) * 100
+            proportions.append(proportion)
+            if proportion > max_proportion:
+                max_proportion = proportion
+                max_proportion_img = pre_img_id
+            elif proportion < min_proportion:
+                min_proportion = proportion
+                min_proportion_img = pre_img_id
+        pre_img_id = image_id
+        now_img += 1
+        proportion = 0
+    x_min, y_min, x_max, y_max = df.iloc[i][4:8].map(int)
+    total_pixels[now_img, x_min : x_max + 1, y_min : y_max + 1] = 1
+    if proportion != 0:
+        proportions.append(proportion)
+
+    fig = plt.figure(figsize=(12, 8))
+    sns.histplot(proportions, bins=100)
+    plt.xlabel("proportion(%)")
+    st.pyplot(fig)
+    plt.savefig("bboxes_proportion")
+    st.text(f"min proportion : {min_proportion:.2f}%({min_proportion_img})")
+    st.text(f"max proportion : {max_proportion:.2f}%({max_proportion_img})")
