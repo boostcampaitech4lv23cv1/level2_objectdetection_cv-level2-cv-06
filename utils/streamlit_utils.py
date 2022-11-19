@@ -6,6 +6,7 @@ import streamlit as st
 import json
 import numpy as np
 from typing import List
+from utils.transform import *
 
 CLASSES = [
     "General trash",
@@ -105,6 +106,54 @@ def make_checkbox(id_list: List[int]) -> List[bool]:
 
         return_list[class_id] = check
     return return_list
+
+
+def draw_aug_img(img):
+    """augmentation 된 이미지를 그려주는 함수
+
+    Args:
+        img (np.array): 원본 이미지
+
+    Returns:
+        np.array: augmented 된 이미지
+    """
+    transformed = soft_aug()(image=img)
+    return transformed["image"]
+
+
+def make_aug_result_tab(df: pd.DataFrame, check_list: List[bool]):
+    """사진 한 장씩 선택해서 작성한 augmentation 결과를 볼 수 있는 탭
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+    """
+    st.header("Augmentation Result")
+
+    group = df.groupby("image_id")
+    img_paths = group.groups.keys()
+
+    img_path = st.selectbox("choose images", img_paths)
+
+    st.write(f"img_path: {img_path}")
+
+    img = cv2.imread(os.path.join("../dataset/", img_path))
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    bboxes = get_bbox(group.get_group(img_path))
+    img_bbox = draw_bbox(img.copy(), bboxes, check_list)
+
+    col1, col2 = st.columns([1, 1])
+
+    if "open_tool" not in st.session_state:
+        st.session_state.open_tool = False
+
+    with col1:
+        st.write("Original Image")
+        st.image(img_bbox)
+
+    with col2:
+        aug_img = draw_aug_img(img)
+        st.write("Augmented Image")
+        st.image(aug_img)
 
 
 def get_bbox(img_group: pd.DataFrame) -> List[list]:

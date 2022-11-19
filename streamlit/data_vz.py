@@ -72,6 +72,8 @@ def label_fix_tab(df: pd.DataFrame):
     if st.session_state.state:
         change_label(selected_id, selected_item)
 
+    return check_list
+
 
 def make_category_count_tab(df: pd.DataFrame):
     """카테고리 별 bbox 갯수 시각화
@@ -131,7 +133,7 @@ def make_bbox_count_tab(df: pd.DataFrame):
 
     ax0.set_title("bbox_nums_0to9_distribution")
     ax0.set_xlabel("bbox_num")
-    ax0.set_xticks(range(0, 10))
+    ax0.set_xticks(range(10))
     ax1.set_title("bbox_nums_10to19_distribution")
     ax1.set_xlabel("bbox_num")
     ax1.set_xticks(range(10, 20))
@@ -148,14 +150,18 @@ def make_bbox_count_tab(df: pd.DataFrame):
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
 st.set_page_config(layout="wide")
 st.title("Data Visualization")
-vz_tab, count_tab, bbox_count_tab = st.tabs(["analysis", "count", "bbox_count"])
+vz_tab, count_tab, bbox_count_tab, aug_tab = st.tabs(
+    ["analysis", "count", "bbox_count", "augmentation"]
+)
 df = set_data()
 with vz_tab:
-    label_fix_tab(df)
+    check_list = label_fix_tab(df)
 with count_tab:
     make_category_count_tab(df)
 with bbox_count_tab:
     make_bbox_count_tab(df)
+with aug_tab:
+    make_aug_result_tab(df, check_list)
 
 # if __name__ == '__main__':
 #     run()
