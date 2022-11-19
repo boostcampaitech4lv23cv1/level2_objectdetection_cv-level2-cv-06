@@ -162,8 +162,8 @@ def make_bboxes_proportion_tab(df: pd.DataFrame):
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
 st.set_page_config(layout="wide")
 st.title("Data Visualization")
-vz_tab, count_tab, bbox_count_tab, bboxes_proportion_tab = st.tabs(
-    ["analysis", "count", "bbox_count", "bbox_proportion"]
+vz_tab, count_tab, bbox_count_tab, bboxes_proportion_tab, bboxes_size_prop = st.tabs(
+    ["analysis", "count", "bbox_count", "bbox_proportion", "bboxes_size_prop"]
 )
 df = set_data()
 with vz_tab:
@@ -174,7 +174,8 @@ with bbox_count_tab:
     make_bbox_count_tab(df)
 with bboxes_proportion_tab:
     make_bboxes_proportion_tab(df)
-
+with bboxes_size_prop:
+    make_bboxes_size_prop_tab(df)
 
 # if __name__ == '__main__':
 #     run()
