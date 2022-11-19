@@ -86,12 +86,12 @@ def make_category_count_tab(df: pd.DataFrame):
 
 
 def make_bbox_count_tab(df: pd.DataFrame):
-
     """
     이미지 별 bbox 갯수 시각화
     Args:
         df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
     """
+
     st.header("bbox_count")
 
     bbox_nums_dict = dict(df["image_id"].value_counts())
@@ -115,9 +115,7 @@ def make_bbox_count_tab(df: pd.DataFrame):
     bbox_mode_img_num = most_common[1]
 
     fig = plt.figure()
-    plt.hist(bbox_nums, bins=bbox_max, range=(0, bbox_max))
-    plt.xlabel("bbox_num")
-    plt.ylabel("frequency")
+    sns.histplot(bbox_nums)
     st.pyplot(fig)
 
     st.write(f"min_bbox: {bbox_min}")
@@ -131,22 +129,18 @@ def make_bbox_count_tab(df: pd.DataFrame):
     ax1 = axes[1]
     ax2 = axes[2]
 
-    ax0.hist(bbox_nums_0to9, range=(0, 10))
     ax0.set_title("bbox_nums_0to9_distribution")
     ax0.set_xlabel("bbox_num")
-    ax0.set_ylabel("frequency")
     ax0.set_xticks(range(0, 10))
-
-    ax1.hist(bbox_nums_10to19, range=(10, 20))
     ax1.set_title("bbox_nums_10to19_distribution")
     ax1.set_xlabel("bbox_num")
-    ax1.set_ylabel("frequency")
     ax1.set_xticks(range(10, 20))
-
-    ax2.hist(bbox_nums_20tomax, bins=52, range=(21, bbox_max))
     ax2.set_title("bbox_nums_over20_distribution")
     ax2.set_xlabel("bbox_num")
-    ax2.set_ylabel("frequency")
+
+    sns.histplot(bbox_nums_0to9, ax=ax0)
+    sns.histplot(bbox_nums_10to19, ax=ax1)
+    sns.histplot(bbox_nums_20tomax, ax=ax2)
     plt.tight_layout(h_pad=10)
     st.pyplot(fig)
 
