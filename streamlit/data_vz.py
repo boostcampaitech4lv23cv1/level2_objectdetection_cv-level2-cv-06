@@ -147,11 +147,20 @@ def make_bbox_count_tab(df: pd.DataFrame):
     st.pyplot(fig)
 
 
+def make_color_dist_tab(df: pd.DataFrame):
+    """
+    bbox, class 별 color distribution
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+    """
+    st.header("color_distribution")
+
+
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
 st.set_page_config(layout="wide")
 st.title("Data Visualization")
-vz_tab, count_tab, bbox_count_tab, aug_tab = st.tabs(
-    ["analysis", "count", "bbox_count", "augmentation"]
+vz_tab, count_tab, bbox_count_tab, color_tab, aug_tab = st.tabs(
+    ["analysis", "count", "bbox_count", "color_distribution", "augmentation"]
 )
 df = set_data()
 with vz_tab:
@@ -162,6 +171,8 @@ with bbox_count_tab:
     make_bbox_count_tab(df)
 with aug_tab:
     make_aug_result_tab(df, check_list)
+with color_tab:
+    make_color_dist_tab(df)
 
 # if __name__ == '__main__':
 #     run()
