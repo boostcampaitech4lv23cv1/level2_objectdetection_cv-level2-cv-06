@@ -26,7 +26,7 @@ def label_fix_tab(df: pd.DataFrame):
 
     img_path = st.selectbox("choose image", img_paths)
 
-    check_list = make_checkbox(id_list=df.class_id.unique().tolist())
+    check_list = make_checkbox(id_list=group.get_group(img_path).class_id.unique())
 
     st.write(f"img_path: {img_path}")
 
