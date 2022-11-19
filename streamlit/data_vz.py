@@ -8,6 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from typing import List
 import sys
+from collections import Counter
 
 sys.path.append("../")
 from utils.streamlit_utils import *
@@ -77,20 +78,84 @@ def make_category_count_tab(df: pd.DataFrame):
     Args:
         df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
     """
+
     st.header("category_count")
     fig = plt.figure(figsize=(12, 8))
     sns.countplot(x=df.class_name)
     st.pyplot(fig)
 
 
+def make_bbox_count_tab(df: pd.DataFrame):
+    """
+    이미지 별 bbox 갯수 시각화
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+    """
+
+    st.header("bbox_count")
+
+    bbox_nums_dict = dict(df["image_id"].value_counts())
+    bbox_nums = list(bbox_nums_dict.values())
+    bbox_min = min(bbox_nums)
+    bbox_max = max(bbox_nums)
+    bbox_nums_0to9 = []
+    bbox_nums_10to19 = []
+    bbox_nums_20tomax = []
+    for i in bbox_nums:
+        if 0 <= i < 10:
+            bbox_nums_0to9.append(i)
+        elif 10 <= i < 20:
+            bbox_nums_10to19.append(i)
+        else:
+            bbox_nums_20tomax.append(i)
+
+    bbox_max_img = sorted(bbox_nums_dict.items(), key=lambda x: x[1])[-1][0]
+    most_common = Counter(bbox_nums).most_common()[0]
+    bbox_mode = most_common[0]
+    bbox_mode_img_num = most_common[1]
+
+    fig = plt.figure()
+    sns.histplot(bbox_nums)
+    st.pyplot(fig)
+
+    st.write(f"min_bbox: {bbox_min}")
+    st.write(f"max_bbox: {bbox_max}")
+    st.write(f"max_bbox: {bbox_max_img}")
+    st.write(f"mode_bbox: {bbox_mode}")
+    st.write(f"mode_bbox_frequency: {bbox_mode_img_num}")
+
+    fig, axes = plt.subplots(3, 1, figsize=(12, 24))
+    ax0 = axes[0]
+    ax1 = axes[1]
+    ax2 = axes[2]
+
+    ax0.set_title("bbox_nums_0to9_distribution")
+    ax0.set_xlabel("bbox_num")
+    ax0.set_xticks(range(0, 10))
+    ax1.set_title("bbox_nums_10to19_distribution")
+    ax1.set_xlabel("bbox_num")
+    ax1.set_xticks(range(10, 20))
+    ax2.set_title("bbox_nums_over20_distribution")
+    ax2.set_xlabel("bbox_num")
+
+    sns.histplot(bbox_nums_0to9, ax=ax0)
+    sns.histplot(bbox_nums_10to19, ax=ax1)
+    sns.histplot(bbox_nums_20tomax, ax=ax2)
+    plt.tight_layout(h_pad=10)
+    st.pyplot(fig)
+
+
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
 st.set_page_config(layout="wide")
 st.title("Data Visualization")
-vz_tab, count_tab = st.tabs(["analysis", "count"])
+vz_tab, count_tab, bbox_count_tab = st.tabs(["analysis", "count", "bbox_count"])
 df = set_data()
 with vz_tab:
     label_fix_tab(df)
 with count_tab:
     make_category_count_tab(df)
+with bbox_count_tab:
+    make_bbox_count_tab(df)
+
 # if __name__ == '__main__':
 #     run()
