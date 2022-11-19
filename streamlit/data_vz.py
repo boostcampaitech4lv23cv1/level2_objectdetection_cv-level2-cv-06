@@ -147,11 +147,23 @@ def make_bbox_count_tab(df: pd.DataFrame):
     st.pyplot(fig)
 
 
+def make_bboxes_proportion_tab(df: pd.DataFrame):
+    """
+    이미지 별 이미지의 bboxes가 이미지 전체에서 차지하는 비율 분포 시각화
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+    """
+
+    img = plt.imread("bboxes_proportion.PNG")
+    image = np.array(img)
+    st.image(image)
+
+
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
 st.set_page_config(layout="wide")
 st.title("Data Visualization")
-vz_tab, count_tab, bbox_count_tab, aug_tab = st.tabs(
-    ["analysis", "count", "bbox_count", "augmentation"]
+vz_tab, count_tab, bbox_count_tab, bboxes_proportion_tab = st.tabs(
+    ["analysis", "count", "bbox_count", "bbox_proportion"]
 )
 df = set_data()
 with vz_tab:
@@ -160,8 +172,9 @@ with count_tab:
     make_category_count_tab(df)
 with bbox_count_tab:
     make_bbox_count_tab(df)
-with aug_tab:
-    make_aug_result_tab(df, check_list)
+with bboxes_proportion_tab:
+    make_bboxes_proportion_tab(df)
+
 
 # if __name__ == '__main__':
 #     run()
