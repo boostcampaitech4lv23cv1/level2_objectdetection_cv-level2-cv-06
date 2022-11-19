@@ -98,45 +98,57 @@ def make_bbox_count_tab(df: pd.DataFrame):
     bbox_nums = list(bbox_nums_dict.values())
     bbox_min = min(bbox_nums)
     bbox_max = max(bbox_nums)
+    bbox_nums_0to9 = []
+    bbox_nums_10to19 = []
+    bbox_nums_20tomax = []
+    for i in bbox_nums:
+        if 0 <= i < 10:
+            bbox_nums_0to9.append(i)
+        elif 10 <= i < 20:
+            bbox_nums_10to19.append(i)
+        else:
+            bbox_nums_20tomax.append(i)
 
-    max_bbox_img = sorted(bbox_nums_dict.items(), key=lambda x: x[1])[-1][0]
+    bbox_max_img = sorted(bbox_nums_dict.items(), key=lambda x: x[1])[-1][0]
     most_common = Counter(bbox_nums).most_common()[0]
     bbox_mode = most_common[0]
     bbox_mode_img_num = most_common[1]
-    fig = plt.figure(figsize=(12, 8))
-    plt.hist(bbox_nums, bins=70)
+
+    fig = plt.figure()
+    plt.hist(bbox_nums, bins=bbox_max, range=(0, bbox_max))
+    plt.xlabel("bbox_num")
+    plt.ylabel("frequency")
     st.pyplot(fig)
 
-    st.write(f"min_bbox_num: {bbox_min}")
-    st.write(f"max_bbox_num: {bbox_max}")
-    st.write(f"mode_bbox_num: {bbox_mode}")
-    st.write(f"max_bbox_img: {max_bbox_img}")
-    st.write(f"bbox_mode_img_num: {bbox_mode_img_num}")
+    st.write(f"min_bbox: {bbox_min}")
+    st.write(f"max_bbox: {bbox_max}")
+    st.write(f"max_bbox: {bbox_max_img}")
+    st.write(f"mode_bbox: {bbox_mode}")
+    st.write(f"mode_bbox_frequency: {bbox_mode_img_num}")
 
-    # fig, axes = plt.subplots(3, 1, figsize=(12, 24))
-    # ax0 = axes[0]
-    # ax1 = axes[1]
-    # ax2 = axes[2]
+    fig, axes = plt.subplots(3, 1, figsize=(12, 24))
+    ax0 = axes[0]
+    ax1 = axes[1]
+    ax2 = axes[2]
 
+    ax0.hist(bbox_nums_0to9, range=(0, 10))
+    ax0.set_title("bbox_nums_0to9_distribution")
+    ax0.set_xlabel("bbox_num")
+    ax0.set_ylabel("frequency")
+    ax0.set_xticks(range(0, 10))
 
-#
-# ax0.hist(nums, bins=70)
-# ax0.set_title("total_distribution")
-# ax0.set_xlabel("bbox_num")
-# ax0.set_ylabel("image_num")
-#
-# ax1.hist(nums, bins=20, range=(0, 21))
-# ax1.set_title("1~20_distribution")
-# ax1.set_xlabel("bbox_num")
-# ax1.set_ylabel("image_num")
-#
-# ax2.hist(nums, bins=50, range=(21, max(nums)))
-# ax2.set_title("over21_distribution")
-# ax2.set_xlabel("bbox_num")
-# ax2.set_ylabel("image_num")
-#
-# plt.tight_layout(h_pad=10)
-# st.pyplot(fig)
+    ax1.hist(bbox_nums_10to19, range=(10, 20))
+    ax1.set_title("bbox_nums_10to19_distribution")
+    ax1.set_xlabel("bbox_num")
+    ax1.set_ylabel("frequency")
+    ax1.set_xticks(range(10, 20))
+
+    ax2.hist(bbox_nums_20tomax, bins=52, range=(21, bbox_max))
+    ax2.set_title("bbox_nums_over20_distribution")
+    ax2.set_xlabel("bbox_num")
+    ax2.set_ylabel("frequency")
+    plt.tight_layout(h_pad=10)
+    st.pyplot(fig)
 
 
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
