@@ -9,6 +9,7 @@ from typing import List
 from utils.transform import *
 import seaborn as sns
 import matplotlib.pyplot as plt
+import plotly.express as px
 
 CLASSES = [
     "General trash",
@@ -296,3 +297,35 @@ def make_bboxes_proportion_tab(df: pd.DataFrame):
     plt.savefig("bboxes_proportion")
     st.text(f"min proportion : {min_proportion:.2f}%({min_proportion_img})")
     st.text(f"max proportion : {max_proportion:.2f}%({max_proportion_img})")
+
+
+def make_bboxes_size_prop_tab(df: pd.DataFrame):
+    LABEL_COLORS = [
+        px.colors.label_rgb(px.colors.convert_to_RGB_255(x))
+        for x in sns.color_palette("Spectral", 10)
+    ]
+    LABEL_COLORS_WOUT_NO_FINDING = LABEL_COLORS[:8] + LABEL_COLORS[9:]
+
+    df["frac_bbox_area"] = (
+        (df["x_max"] - df["x_min"]) * (df["y_max"] - df["y_min"]) / 1024 / 1024 * 100
+    )
+
+    fig = px.box(
+        df.sort_values(by="class_name"),
+        x="class_name",
+        y="frac_bbox_area",
+        color="class_name",
+        color_discrete_sequence=LABEL_COLORS_WOUT_NO_FINDING,
+        notched=True,
+        labels={"class_name": "Class Name", "frac_bbox_area": "BBox Area (%)"},
+        title="<b>Class 별 이미지 내 Bbox 크기 비율 분포</b>",
+    )
+
+    fig.update_layout(
+        showlegend=True,
+        yaxis_range=[-0.25, 101.5],
+        legend_title_text=None,
+        xaxis_title="",
+        yaxis_title="<b>Bbox 크기 비율 (%)</b>",
+    )
+    st.plotly_chart(fig)
