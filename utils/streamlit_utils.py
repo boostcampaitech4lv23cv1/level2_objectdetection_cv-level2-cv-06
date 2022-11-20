@@ -329,8 +329,6 @@ def make_color_dist_tab(df: pd.DataFrame, figs_path: str):
         df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
         color_dist_figs_path: color distribution figure pickle 파일 경로
     """
-    st.header("color_distribution")
-
     if st.button("refresh"):
         make_color_dist_figs(df, figs_path)
     display_plotly_figs(figs_path)
