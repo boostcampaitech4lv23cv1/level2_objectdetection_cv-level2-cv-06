@@ -13,6 +13,7 @@ import plotly.express as px
 import pickle
 import sys
 from stqdm import stqdm
+from collections import Counter
 
 CLASSES = [
     "General trash",
@@ -257,7 +258,7 @@ def change_label(item_id: int, pre_label: str):
 def change_state():
     try:
         st.session_state.state = not st.session_state.state
-    except:
+    except Exception:
         print("not exist session variable")
 
 
@@ -265,47 +266,86 @@ def show_log():
     st.write("modify complete!")
 
 
-def make_bboxes_proportion_tab(df: pd.DataFrame):
-    st.header("bboxes_proportion")
-    df_length = len(df)
-    image_ids = df["image_id"]
-    image_length = len(set(image_ids))
-    total_pixels = np.zeros((image_length, 1024, 1024), dtype=bool)
-    pixel_num = 1024 * 1024
-    proportions = []
-    pre_img_id = image_ids[0]
-    now_img = 0
-    min_proportion = 100
-    min_proportion_img = 0
-    max_proportion = 0
-    max_proportion_img = 0
+def make_category_count_tab(df: pd.DataFrame):
+    """카테고리 별 bbox 갯수 시각화
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+    """
 
-    for i in range(df_length):
-        image_id = image_ids[i]
-        if pre_img_id != image_id:
-            proportion = ((np.sum(total_pixels[now_img])) / pixel_num) * 100
-            proportions.append(proportion)
-            if proportion > max_proportion:
-                max_proportion = proportion
-                max_proportion_img = pre_img_id
-            elif proportion < min_proportion:
-                min_proportion = proportion
-                min_proportion_img = pre_img_id
-        pre_img_id = image_id
-        now_img += 1
-        proportion = 0
-    x_min, y_min, x_max, y_max = df.iloc[i][4:8].map(int)
-    total_pixels[now_img, x_min : x_max + 1, y_min : y_max + 1] = 1
-    if proportion != 0:
-        proportions.append(proportion)
-
+    st.header("category_count")
     fig = plt.figure(figsize=(12, 8))
-    sns.histplot(proportions, bins=100)
-    plt.xlabel("proportion(%)")
+    sns.countplot(x=df.class_name)
     st.pyplot(fig)
-    plt.savefig("bboxes_proportion")
-    st.text(f"min proportion : {min_proportion:.2f}%({min_proportion_img})")
-    st.text(f"max proportion : {max_proportion:.2f}%({max_proportion_img})")
+
+
+def make_bbox_count_tab(df: pd.DataFrame):
+    """
+    이미지 별 bbox 갯수 시각화
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+    """
+
+    st.header("bbox_count")
+
+    bbox_nums_dict = dict(df["image_id"].value_counts())
+    bbox_nums = list(bbox_nums_dict.values())
+    bbox_min = min(bbox_nums)
+    bbox_max = max(bbox_nums)
+    bbox_nums_0to9 = []
+    bbox_nums_10to19 = []
+    bbox_nums_20tomax = []
+    for i in bbox_nums:
+        if 0 <= i < 10:
+            bbox_nums_0to9.append(i)
+        elif 10 <= i < 20:
+            bbox_nums_10to19.append(i)
+        else:
+            bbox_nums_20tomax.append(i)
+
+    bbox_max_img = sorted(bbox_nums_dict.items(), key=lambda x: x[1])[-1][0]
+    most_common = Counter(bbox_nums).most_common()[0]
+    bbox_mode = most_common[0]
+    bbox_mode_img_num = most_common[1]
+
+    fig = plt.figure()
+    sns.histplot(bbox_nums)
+    st.pyplot(fig)
+
+    st.write(f"min_bbox: {bbox_min}")
+    st.write(f"max_bbox: {bbox_max}")
+    st.write(f"max_bbox: {bbox_max_img}")
+    st.write(f"mode_bbox: {bbox_mode}")
+    st.write(f"mode_bbox_frequency: {bbox_mode_img_num}")
+
+    fig, axes = plt.subplots(3, 1, figsize=(12, 24))
+    ax0 = axes[0]
+    ax1 = axes[1]
+    ax2 = axes[2]
+
+    ax0.set_title("bbox_nums_0to9_distribution")
+    ax0.set_xlabel("bbox_num")
+    ax0.set_xticks(range(10))
+    ax1.set_title("bbox_nums_10to19_distribution")
+    ax1.set_xlabel("bbox_num")
+    ax1.set_xticks(range(10, 20))
+    ax2.set_title("bbox_nums_over20_distribution")
+    ax2.set_xlabel("bbox_num")
+
+    sns.histplot(bbox_nums_0to9, ax=ax0)
+    sns.histplot(bbox_nums_10to19, ax=ax1)
+    sns.histplot(bbox_nums_20tomax, ax=ax2)
+    plt.tight_layout(h_pad=10)
+    st.pyplot(fig)
+
+
+def make_bboxes_proportion_tab():
+    """
+    이미지 별 이미지의 bboxes가 이미지 전체에서 차지하는 비율 분포 시각화
+    """
+
+    img = plt.imread("bboxes_proportion.PNG")
+    image = np.array(img)
+    st.image(image)
 
 
 def display_plotly_figs(figs_path: str):
@@ -316,7 +356,7 @@ def display_plotly_figs(figs_path: str):
     try:
         with open(figs_path, "rb") as fr:
             color_dist_figs = pickle.load(fr)
-    except:
+    except Exception:
         sys.stderr.write("No file: %s\n" % figs_path)
         exit(1)
     for color_dist_fig in color_dist_figs:
@@ -343,10 +383,7 @@ def make_color_dist_figs(df: pd.DataFrame, figs_path: str):
     group = df.groupby("image_id")
     img_paths = list(group.groups.keys())
     len_df = len(df)
-    color_ann_cumulation = {}
-
-    for color in color_list:
-        color_ann_cumulation[color] = [0] * len_df
+    color_ann_cumulation = {color: [0] * len_df for color in color_list}
 
     for img_path in stqdm(img_paths):
         img_bgr = cv2.imread(os.path.join("../dataset/", img_path))
