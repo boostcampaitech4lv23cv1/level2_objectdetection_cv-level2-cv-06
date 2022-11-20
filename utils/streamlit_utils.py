@@ -159,7 +159,7 @@ def make_aug_result_tab(df: pd.DataFrame, check_list: List[bool]):
 def get_bbox(img_group: pd.DataFrame) -> List[list]:
     """
     Args:
-        img_group: 이미지 별로 gropu화 된 데이터 프레임
+        img_group: 이미지 별로 group화 된 데이터 프레임
 
     Returns:
         annotation id, class id 및 bbox크기를 원소로 하는 list
