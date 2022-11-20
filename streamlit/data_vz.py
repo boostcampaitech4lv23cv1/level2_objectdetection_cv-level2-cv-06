@@ -147,13 +147,13 @@ def make_bbox_count_tab(df: pd.DataFrame):
     st.pyplot(fig)
 
 
-def make_color_dist_tab(df: pd.DataFrame):
-    """
-    bbox, class 별 color distribution
-    Args:
-        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
-    """
-    st.header("color_distribution")
+# def make_color_dist_tab(df: pd.DataFrame):
+#     """
+#     bbox, class 별 color distribution
+#     Args:
+#         df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+#     """
+#     st.header("color_distribution")
 
 
 def make_bboxes_proportion_tab(df: pd.DataFrame):
@@ -200,7 +200,8 @@ with bboxes_proportion_tab:
 with bboxes_size_prop:
     make_bboxes_size_prop_tab(df)
 with color_tab:
-    make_color_dist_tab(df)
+    color_dist_figs_path = "./color_dist_figs.pkl"
+    make_color_dist_tab(df, color_dist_figs_path)
 
 # if __name__ == '__main__':
 #     run()

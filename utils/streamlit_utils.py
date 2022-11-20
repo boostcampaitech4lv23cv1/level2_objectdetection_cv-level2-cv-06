@@ -10,6 +10,9 @@ from utils.transform import *
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
+import pickle
+import sys
+from stqdm import stqdm
 
 CLASSES = [
     "General trash",
@@ -25,6 +28,12 @@ CLASSES = [
 ]
 RED_COLOR = (255, 0, 0)
 BLUE_COLOR = (0, 0, 255)
+LABEL_COLORS = [
+    px.colors.label_rgb(px.colors.convert_to_RGB_255(x))
+    for x in sns.color_palette("Spectral", 10)
+]
+LABEL_COLORS_WOUT_NO_FINDING = LABEL_COLORS[:8] + LABEL_COLORS[9:]
+
 LINE_WEIGHT = 2
 TRAIN_JSON = "../dataset/train_repair.json"
 CHANGED_LABELS = "../streamlit/repair.json"
@@ -299,12 +308,92 @@ def make_bboxes_proportion_tab(df: pd.DataFrame):
     st.text(f"max proportion : {max_proportion:.2f}%({max_proportion_img})")
 
 
+def display_plotly_figs(figs_path: str):
+    """plotly figures를 streamlit page에 표시하는 함수, plotly figure list가 저장된 pickle 파일을 불러옴
+    Args:
+        color_dist_figs_path: pickle 파일 경로
+    """
+    try:
+        with open(figs_path, "rb") as fr:
+            color_dist_figs = pickle.load(fr)
+    except:
+        sys.stderr.write("No file: %s\n" % figs_path)
+        exit(1)
+    for color_dist_fig in color_dist_figs:
+        st.plotly_chart(color_dist_fig)
+
+
+def make_color_dist_tab(df: pd.DataFrame, figs_path: str):
+    """bbox 내의 color distribution의 box plot 표시
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+        color_dist_figs_path: color distribution figure pickle 파일 경로
+    """
+    st.header("color_distribution")
+
+    if st.button("refresh"):
+        make_color_dist_figs(df, figs_path)
+    display_plotly_figs(figs_path)
+
+
+def make_color_dist_figs(df: pd.DataFrame, figs_path: str):
+    """bbox 내의 color distribution의 box plot 계산 및 저장
+    Args:
+        df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+    """
+    color_list = ["r_mean", "g_mean", "b_mean", "h_mean", "s_mean", "v_mean"]
+    group = df.groupby("image_id")
+    img_paths = list(group.groups.keys())
+    len_df = len(df)
+    color_ann_cumulation = {}
+
+    for color in color_list:
+        color_ann_cumulation[color] = [0] * len_df
+
+    for img_path in stqdm(img_paths):
+        img_bgr = cv2.imread(os.path.join("../dataset/", img_path))
+        img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+        img_hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
+        bboxes = get_bbox(group.get_group(img_path))
+        for bbox in bboxes:
+            b_id, c_id, x_min, y_min, x_max, y_max = map(int, bbox)
+            cropped_rgb = img_rgb[y_min:y_max, x_min:x_max]
+            rgb_mean = np.mean(cropped_rgb, axis=(0, 1))
+            cropped_hsv = img_hsv[y_min:y_max, x_min:x_max]
+            hsv_mean = np.mean(cropped_hsv, axis=(0, 1))
+            color_mean = np.concatenate((rgb_mean, hsv_mean))
+            for i, color in enumerate(color_list):
+                color_ann_cumulation[color][b_id] = color_mean[i]
+
+    for color in color_list:
+        df[color] = color_ann_cumulation[color]
+
+    fig_list = []
+    for color in color_list:
+        fig = px.box(
+            df.sort_values(by="class_name"),
+            x="class_name",
+            y=color,
+            color="class_name",
+            color_discrete_sequence=LABEL_COLORS_WOUT_NO_FINDING,
+            notched=True,
+            labels={"class_name": "Class Name", "frac_bbox_area": "BBox Area (%)"},
+            title="<b>Class 별 이미지 내 Bbox 의 " + color + " 분포 </b>",
+        )
+        fig.update_layout(
+            showlegend=True,
+            yaxis_range=[-10, 260],
+            legend_title_text=None,
+            xaxis_title="",
+            yaxis_title="<b> " + color + " </b>",
+        )
+        fig_list.append(fig)
+
+        with open(figs_path, "wb") as fw:
+            pickle.dump(fig_list, fw)
+
+
 def make_bboxes_size_prop_tab(df: pd.DataFrame):
-    LABEL_COLORS = [
-        px.colors.label_rgb(px.colors.convert_to_RGB_255(x))
-        for x in sns.color_palette("Spectral", 10)
-    ]
-    LABEL_COLORS_WOUT_NO_FINDING = LABEL_COLORS[:8] + LABEL_COLORS[9:]
 
     df["frac_bbox_area"] = (
         (df["x_max"] - df["x_min"]) * (df["y_max"] - df["y_min"]) / 1024 / 1024 * 100
