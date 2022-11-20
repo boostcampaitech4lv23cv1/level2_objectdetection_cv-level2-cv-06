@@ -147,6 +147,15 @@ def make_bbox_count_tab(df: pd.DataFrame):
     st.pyplot(fig)
 
 
+# def make_color_dist_tab(df: pd.DataFrame):
+#     """
+#     bbox, class 별 color distribution
+#     Args:
+#         df: coco dataset의 annotations를 각 행으로 하는 데이터 프레임
+#     """
+#     st.header("color_distribution")
+
+
 def make_bboxes_proportion_tab(df: pd.DataFrame):
     """
     이미지 별 이미지의 bboxes가 이미지 전체에서 차지하는 비율 분포 시각화
@@ -162,8 +171,22 @@ def make_bboxes_proportion_tab(df: pd.DataFrame):
 # 실행 명령어 streamlit run data_vz.py  --server.fileWatcherType none --server.port 30004
 st.set_page_config(layout="wide")
 st.title("Data Visualization")
-vz_tab, count_tab, bbox_count_tab, bboxes_proportion_tab, bboxes_size_prop = st.tabs(
-    ["analysis", "count", "bbox_count", "bbox_proportion", "bboxes_size_prop"]
+(
+    vz_tab,
+    count_tab,
+    bbox_count_tab,
+    bboxes_proportion_tab,
+    bboxes_size_prop,
+    color_tab,
+) = st.tabs(
+    [
+        "analysis",
+        "count",
+        "bbox_count",
+        "bbox_proportion",
+        "bboxes_size_prop",
+        "color_distribution",
+    ]
 )
 df = set_data()
 with vz_tab:
@@ -176,6 +199,9 @@ with bboxes_proportion_tab:
     make_bboxes_proportion_tab(df)
 with bboxes_size_prop:
     make_bboxes_size_prop_tab(df)
+with color_tab:
+    color_dist_figs_path = "./color_dist_figs.pkl"
+    make_color_dist_tab(df, color_dist_figs_path)
 
 # if __name__ == '__main__':
 #     run()
