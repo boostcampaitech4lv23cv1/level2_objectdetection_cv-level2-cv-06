@@ -14,7 +14,7 @@ classes = (
     "Clothing",
 )
 img_norm_cfg = dict(
-    mean=[123.65, 117.397, 110.075], std=[60.266, 59.257, 61.373], to_rgb=True
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.120, 57.375], to_rgb=True
 )
 train_pipeline = [
     dict(type="LoadImageFromFile"),
@@ -50,7 +50,7 @@ test_pipeline = [
 
 data = dict(
     samples_per_gpu=8,
-    workers_per_gpu=2,
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file="/opt/ml/stratify_dataset/train_fold_0.json",  # train json 파일 경로
