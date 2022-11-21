@@ -235,12 +235,12 @@ lr_config = dict(
     warmup="linear",
     warmup_iters=1000,
     warmup_ratio=0.001,
-    step=[8, 15, 20],
+    step=[8, 15],
 )
 
 
-fp16 = dict(loss_scale="dynamic")
+#fp16 = dict(loss_scale="dynamic")
 runner = dict(
     type="EpochBasedRunner",  # Type of runner to use (i.e. IterBasedRunner or EpochBasedRunner)
-    max_epochs=100,
+    max_epochs=20,
 )  # Runner that runs the workflow in total max_epochs. For IterBasedRunner use `max_iters`
