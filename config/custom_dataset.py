@@ -16,6 +16,48 @@ classes = (
 img_norm_cfg = dict(
     mean=[123.65, 117.397, 110.075], std=[60.266, 59.257, 61.373], to_rgb=True
 )
+
+
+albu_train_transforms = [
+    dict(type="RandomRotate90", p=1.0),
+    dict(
+        type="OneOf",
+        transforms=[
+            dict(
+                type="HueSaturationValue",
+                hue_shift_limit=10,
+                sat_shift_limit=35,
+                val_shift_limit=25,
+            ),
+            dict(type="RandomGamma"),
+            dict(type="CLAHE"),
+        ],
+        p=0.5,
+    ),
+    dict(
+        type="OneOf",
+        transforms=[
+            dict(
+                type="RandomBrightnessContrast",
+                brightness_limit=0.25,
+                contrast_limit=0.25,
+            ),
+            dict(type="RGBShift", r_shift_limit=15, g_shift_limit=15, b_shift_limit=15),
+        ],
+        p=0.5,
+    ),
+    dict(
+        type="OneOf",
+        transforms=[
+            dict(type="Blur"),
+            dict(type="MotionBlur"),
+            dict(type="GaussNoise"),
+            dict(type="ImageCompression", quality_lower=75),
+        ],
+        p=0.4,
+    ),
+]
+
 train_pipeline = [
     dict(type="LoadImageFromFile"),
     dict(type="LoadAnnotations", with_bbox=True),
@@ -24,6 +66,20 @@ train_pipeline = [
     # ),  # 이미지 사이즈 랜덤 선택
     dict(type="Resize", img_scale=(512, 512), keep_ratio=True),
     dict(type="RandomFlip", flip_ratio=0.5),
+    dict(
+        type="Albu",
+        transforms=albu_train_transforms,
+        bbox_params=dict(
+            type="BboxParams",
+            format="pascal_voc",
+            label_fields=["gt_labels"],
+            min_visibility=0.0,
+            filter_lost_elements=True,
+        ),
+        keymap={"img": "image", "gt_masks": "masks", "gt_bboxes": "bboxes"},
+        update_pad_shape=False,
+        skip_img_without_anno=True,
+    ),
     dict(type="Normalize", **img_norm_cfg),
     dict(type="Pad", size_divisor=32),
     dict(type="DefaultFormatBundle"),
@@ -49,8 +105,8 @@ test_pipeline = [
 
 
 data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=2,
+    samples_per_gpu=8,
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file="/opt/ml/stratify_dataset/train_fold_0.json",  # train json 파일 경로
