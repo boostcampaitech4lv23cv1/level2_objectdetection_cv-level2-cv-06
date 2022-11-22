@@ -1,7 +1,7 @@
 checkpoint_config = dict(interval=5)
 # yapf:disable
 log_config = dict(
-    interval=500,
+    interval=50,
     hooks=[
         dict(type="TextLoggerHook"),
         dict(
@@ -9,7 +9,7 @@ log_config = dict(
             init_kwargs=dict(
                 project="bcaitech4_object_detection",
                 entity="cv-noops",
-                name="CascadeRCNN_eff",
+                name="VFNet_r50_fpn",
             ),
             interval=10,
             log_checkpoint=True,
