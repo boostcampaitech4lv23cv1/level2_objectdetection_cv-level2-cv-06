@@ -216,5 +216,9 @@ stratify_dataset/
 
 !mmdetection/
 mmdetection/*
-!mmdetection/configs/custom/*
+!mmdetection/configs/
+
+mmdetection/configs/*
+!mmdetection/configs/custom
+
 !mmdetection/run.sh
