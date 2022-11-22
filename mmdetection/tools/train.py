@@ -108,6 +108,7 @@ def parse_args():
     parser.add_argument(
         "--wandb_tag", nargs="+", type=str, default=[], help="specify wandb run tag."
     )
+    parser.add_argument("--timm", type=str, default=None, help="specify wandb run tag.")
 
     args = parser.parse_args()
 
@@ -130,8 +131,16 @@ def main():
     args = parse_args()
 
     cfg = Config.fromfile(args.config)
-    cfg.log_config.hooks[1].init_kwargs.name = args.wandb_nm
     cfg.log_config.hooks[1].init_kwargs.tags = args.wandb_tag
+
+    if cfg.model.backbone.type == "mmcls.TIMMBackbone" and args.timm is not None:
+        cfg.model.model_name = args.timm
+        cfg.log_config.hooks[1].init_kwargs.name = f"{cfg.model.type}_{args.timm}"
+    else:
+        cfg.log_config.hooks[
+            1
+        ].init_kwargs.name = f"{cfg.model.type}_{cfg.model.backbone.type}"
+
     # replace the ${key} with the value of cfg.key
     cfg = replace_cfg_vals(cfg)
 
