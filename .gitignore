@@ -212,3 +212,9 @@ cython_debug/
 
 # dataset
 /dataset
+stratify_dataset/
+
+!mmdetection/
+mmdetection/*
+!mmdetection/configs/custom/*
+!mmdetection/run.sh
