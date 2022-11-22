@@ -1,10 +1,21 @@
-checkpoint_config = dict(interval=20)
+checkpoint_config = dict(interval=5)
 # yapf:disable
 log_config = dict(
-    interval=50,
+    interval=500,
     hooks=[
         dict(type="TextLoggerHook"),
-        # dict(type='TensorboardLoggerHook')
+        dict(
+            type="MMDetWandbHook",
+            init_kwargs=dict(
+                project="bcaitech4_object_detection",
+                entity="cv-noops",
+                name="CascadeRCNN_eff",
+            ),
+            interval=10,
+            log_checkpoint=True,
+            log_checkpoint_metadata=True,
+            num_eval_images=50,
+        ),
     ],
 )
 # yapf:enable
@@ -15,14 +26,4 @@ log_level = "INFO"
 load_from = None
 resume_from = None
 workflow = [("train", 1)]
-
-# disable opencv multithreading to avoid system being overloaded
-opencv_num_threads = 0
-# set multi-process start method as `fork` to speed up the training
-mp_start_method = "fork"
-
-# Default setting for scaling LR automatically
-#   - `enable` means enable scaling LR automatically
-#       or not by default.
-#   - `base_batch_size` = (8 GPUs) x (2 samples per GPU).
-auto_scale_lr = dict(enable=False, base_batch_size=16)
+# 1 epoch에 train과 validation을 모두 하고 싶으면 workflow = [('train', 1), ('val', 1)]
