@@ -216,11 +216,17 @@ stratify_dataset/
 
 !mmdetection/
 mmdetection/*
-!mmdetection/configs/
 
+!mmdetection/configs/
 mmdetection/configs/*
+
 !mmdetection/configs/custom
 
 !mmdetection/run.sh
 /wandb
 /work_dirs
+
+!mmdetection/tools/
+mmdetection/tools/*
+!mmdetection/tools/train.py
+
