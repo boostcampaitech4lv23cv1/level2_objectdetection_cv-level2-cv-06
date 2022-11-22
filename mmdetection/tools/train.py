@@ -133,8 +133,12 @@ def main():
     cfg = Config.fromfile(args.config)
     cfg.log_config.hooks[1].init_kwargs.tags = args.wandb_tag
 
-    if cfg.model.backbone.type == "mmcls.TIMMBackbone" and args.timm is not None:
+    if check_timm(args, cfg):
         cfg.model.model_name = args.timm
+
+    if args.wandb_nm is not None:
+        cfg.log_config.hooks[1].init_kwargs.name = args.wandb_nm
+    elif check_timm(args, cfg):
         cfg.log_config.hooks[1].init_kwargs.name = f"{cfg.model.type}_{args.timm}"
     else:
         cfg.log_config.hooks[
@@ -273,6 +277,13 @@ def main():
         timestamp=timestamp,
         meta=meta,
     )
+
+
+def check_timm(args, cfg):
+    '''
+    check if the backbone is timm
+    '''
+    return cfg.model.backbone.type == "mmcls.TIMMBackbone" and args.timm is not None
 
 
 if __name__ == "__main__":
