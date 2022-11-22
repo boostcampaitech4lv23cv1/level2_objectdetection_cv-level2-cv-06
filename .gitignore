@@ -222,3 +222,5 @@ mmdetection/configs/*
 !mmdetection/configs/custom
 
 !mmdetection/run.sh
+/wandb
+/work_dirs
