@@ -110,6 +110,7 @@ def parse_args():
     )
     parser.add_argument("--timm", type=str, default=None, help="specify wandb run tag.")
     parser.add_argument("--batch_size", type=int, default=None)
+    parser.add_argument("--epochs", type=int, default=None)
 
     args = parser.parse_args()
 
@@ -135,6 +136,8 @@ def main():
     cfg.log_config.hooks[1].init_kwargs.tags = args.wandb_tag
     if args.batch_size is not None:
         cfg.data.samples_per_gpu = args.batch_size
+    if args.epochs is not None:
+        cfg.runner.max_epochs = args.epochs        
     if check_timm(args, cfg):
         cfg.model.model_name = args.timm
 
