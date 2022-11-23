@@ -32,7 +32,7 @@ python tools/train.py \
     --seed 42 \
     --wandb_nm cascade_r50_fpn_batch_8 \
     --wandb_tag cascade_rcnn \
-    --batch_size 8
+    --batch_size 8 \
     --epochs 20
 
 python tools/train.py \
@@ -41,7 +41,7 @@ python tools/train.py \
     --seed 42 \
     --wandb_nm cascade_r50_fpn_batch_16 \
     --wandb_tag cascade_rcnn \
-    --batch_size 16
+    --batch_size 16 \
     --epochs 40
 
 python tools/train.py \
@@ -50,7 +50,7 @@ python tools/train.py \
     --seed 42 \
     --wandb_nm cascade_r50_fpn_batch_32 \
     --wandb_tag cascade_rcnn \
-    --batch_size 32
+    --batch_size 32 \
     --epochs 80
 
 # python tools/train.py configs/custom/cascade_rcnn/pvt_b1.py --work-dir work_dirs/cascade_rcnn_pvt_b1 --seed 42
