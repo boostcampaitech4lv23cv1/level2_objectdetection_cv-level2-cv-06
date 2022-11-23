@@ -230,3 +230,4 @@ mmdetection/configs/*
 mmdetection/tools/*
 !mmdetection/tools/train.py
 
+/yolov7
