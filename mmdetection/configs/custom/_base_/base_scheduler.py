@@ -22,5 +22,5 @@ lr_config = dict(
 
 runner = dict(
     type="EpochBasedRunner",
-    max_epochs=20,
+    max_epochs=40,
 )

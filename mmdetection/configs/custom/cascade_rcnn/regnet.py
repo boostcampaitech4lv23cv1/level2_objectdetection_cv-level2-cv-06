@@ -1,6 +1,6 @@
 _base_ = [
     "../../_base_/models/cascade_rcnn_r50_fpn.py",
-    "../_base_/custom_dataset.py",
+    "../_base_/dataset.py",
     "../_base_/runtime.py",
     "../_base_/base_scheduler.py",
 ]
@@ -9,6 +9,7 @@ _base_ = [
 model = dict(
     type="CascadeRCNN",
     backbone=dict(
+        _delete_=True,
         type="RegNet",
         arch="regnetx_12gf",
         out_indices=(0, 1, 2, 3),

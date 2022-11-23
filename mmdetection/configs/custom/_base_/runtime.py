@@ -1,4 +1,4 @@
-checkpoint_config = dict(interval=5)
+checkpoint_config = dict(interval=20)
 # yapf:disable
 log_config = dict(
     interval=500,
@@ -9,7 +9,7 @@ log_config = dict(
             init_kwargs=dict(
                 project="bcaitech4_object_detection",
                 entity="cv-noops",
-                name="CascadeRCNN_eff",
+                name="no_name",
             ),
             interval=10,
             log_checkpoint=True,
