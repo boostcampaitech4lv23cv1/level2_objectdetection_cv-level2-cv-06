@@ -3,3 +3,5 @@
 python tools/train.py configs/custom/detr/resnet.py \
 --wandb_nm detr_resnet50 --wandb_tag detr resnet
 
+
+python tools/train.py configs/custom/cascade_rcnn/eff_b0.py
