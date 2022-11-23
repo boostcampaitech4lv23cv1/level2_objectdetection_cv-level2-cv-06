@@ -131,6 +131,7 @@ def main():
     args = parse_args()
 
     cfg = Config.fromfile(args.config)
+    cfg.data.samples_per_gpu = args.batch_size
     cfg.log_config.hooks[1].init_kwargs.name = args.wandb_nm
     cfg.log_config.hooks[1].init_kwargs.tags = args.wandb_tag
     # replace the ${key} with the value of cfg.key
