@@ -27,7 +27,7 @@
 ## cascadercnn_r101 experiment
 
 python tools/train.py \
-    configs/custom/cascade_rcnn/cascade_r101_fpn.py \
+    configs/custom/cascade_rcnn/cascade_r50_fpn.py \
     --work-dir ../work_dirs/cascade_r50_fpn_batch_8 \
     --seed 42 \
     --wandb_nm cascade_r50_fpn_batch_8 \
@@ -36,7 +36,7 @@ python tools/train.py \
     --epochs 20
 
 python tools/train.py \
-    configs/custom/cascade_rcnn/cascade_r101_fpn.py \
+    configs/custom/cascade_rcnn/cascade_r50_fpn.py \
     --work-dir ../work_dirs/cascade_r50_fpn_batch_16 \
     --seed 42 \
     --wandb_nm cascade_r50_fpn_batch_16 \
@@ -45,7 +45,7 @@ python tools/train.py \
     --epochs 40
 
 python tools/train.py \
-    configs/custom/cascade_rcnn/cascade_r101_fpn.py \
+    configs/custom/cascade_rcnn/cascade_r50_fpn.py \
     --work-dir ../work_dirs/cascade_r50_fpn_batch_32 \
     --seed 42 \
     --wandb_nm cascade_r50_fpn_batch_32 \

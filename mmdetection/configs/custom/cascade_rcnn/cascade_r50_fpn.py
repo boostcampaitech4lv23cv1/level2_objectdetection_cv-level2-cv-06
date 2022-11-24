@@ -1,11 +1,8 @@
-# _base_ = ["../custom/custom_dataset.py", "../_base_/default_runtime.py"]
 _base_ = [
     "../_base_/dataset.py",
     "../_base_/default_schedule.py",
     "../_base_/runtime.py",
 ]
-
-# pretrained = "https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_base_patch4_window7_224.pth"  # noqa
 
 model = dict(
     type="CascadeRCNN",
