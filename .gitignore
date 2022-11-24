@@ -251,8 +251,14 @@ yolov7/*
 
 !yolov7/utils/
 yolov7/utils/*
+
 !yolov7/utils/google_utils.py
+
+!yolov7/utils/wandb_logging/
+yolov7/utils/wandb_logging/*
+!yolov7/utils/wandb_logging/wandb_utils.py
 
 runs/
 
 *.pt
+
