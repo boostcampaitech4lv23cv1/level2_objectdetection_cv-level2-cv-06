@@ -6,29 +6,29 @@
 
 # python tools/train.py configs/custom/cascade_rcnn/eff_b0.py
 
-python tools/train.py \
-    configs/custom/vfnet/vfnet_swin_fpn.py \
-    --work-dir ../work_dirs/vfnet_swin_fpn_batch_32 \
-    --seed 42 \
-    --wandb_nm vfnet_swin_fpn_batch_32 \
-    --wandb_tag vfnet swin fpn \
-    --batch_size 32 \
-    --epochs 80
+# python tools/train.py \
+#     configs/custom/vfnet/vfnet_swin_fpn.py \
+#     --work-dir ../work_dirs/vfnet_swin_fpn_batch_32 \
+#     --seed 42 \
+#     --wandb_nm vfnet_swin_fpn_batch_32 \
+#     --wandb_tag vfnet swin fpn \
+#     --batch_size 32 \
+#     --epochs 80
 
-python tools/train.py \
-    configs/custom/vfnet/vfnet_swin_fpn.py \
-    --work-dir ../work_dirs/vfnet_swin_fpn_batch_16 \
-    --seed 42 \
-    --wandb_nm vfnet_swin_fpn_batch_16 \
-    --wandb_tag vfnet swin fpn \
-    --batch_size 16 \
-    --epochs 80
+# python tools/train.py \
+#     configs/custom/vfnet/vfnet_swin_fpn.py \
+#     --work-dir ../work_dirs/vfnet_swin_fpn_batch_16 \
+#     --seed 42 \
+#     --wandb_nm VFNet_swin_fpn_batch_16 \
+#     --wandb_tag vfnet swin fpn \
+#     --batch_size 16 \
+#     --epochs 40
 
 python tools/train.py \
     configs/custom/vfnet/vfnet_swin_fpn.py \
     --work-dir ../work_dirs/vfnet_swin_fpn_batch_8 \
     --seed 42 \
-    --wandb_nm vfnet_swin_fpn_batch_8 \
+    --wandb_nm VFnet_swin_fpn_batch_8 \
     --wandb_tag vfnet swin fpn \
     --batch_size 8 \
     --epochs 20

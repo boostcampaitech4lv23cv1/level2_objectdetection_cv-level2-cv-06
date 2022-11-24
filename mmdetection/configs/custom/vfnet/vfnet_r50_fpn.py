@@ -1,6 +1,6 @@
 _base_ = [
     "../_base_/dataset.py",
-    "../_base_/default_schedule.py",
+    "../_base_/base_scheduler.py",
     "../_base_/runtime.py",
 ]
 # model settings
