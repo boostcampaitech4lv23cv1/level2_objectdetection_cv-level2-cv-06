@@ -230,8 +230,6 @@ mmdetection/configs/*
 mmdetection/tools/*
 !mmdetection/tools/train.py
 
-/yolov7
-
 !mmdetection/mmdet/
 mmdetection/mmdet/*
 
@@ -244,3 +242,17 @@ mmdetection/mmdet/core/hook/*
 
 /convert2Yolo
 manifest.txt
+
+!yolov7/
+yolov7/*
+
+!yolov7/run/
+!yolov7/train.py
+
+!yolov7/utils/
+yolov7/utils/*
+!yolov7/utils/google_utils.py
+
+runs/
+
+*.pt
