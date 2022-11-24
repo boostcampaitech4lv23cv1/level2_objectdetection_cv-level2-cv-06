@@ -231,3 +231,16 @@ mmdetection/tools/*
 !mmdetection/tools/train.py
 
 /yolov7
+
+!mmdetection/mmdet/
+mmdetection/mmdet/*
+
+!mmdetection/mmdet/core/
+mmdetection/mmdet/core/*
+
+!mmdetection/mmdet/core/hook/
+mmdetection/mmdet/core/hook/*
+!mmdetection/mmdet/core/hook/wandblogger_hook.py
+
+/convert2Yolo
+manifest.txt
