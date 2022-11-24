@@ -241,3 +241,6 @@ mmdetection/mmdet/core/*
 !mmdetection/mmdet/core/hook/
 mmdetection/mmdet/core/hook/*
 !mmdetection/mmdet/core/hook/wandblogger_hook.py
+
+/convert2Yolo
+manifest.txt
