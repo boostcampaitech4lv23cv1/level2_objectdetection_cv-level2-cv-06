@@ -230,3 +230,6 @@ mmdetection/configs/*
 mmdetection/tools/*
 !mmdetection/tools/train.py
 
+yolov7/
+convert2Yolo/
+manifest.txt
