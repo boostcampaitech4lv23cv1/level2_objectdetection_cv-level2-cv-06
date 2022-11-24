@@ -230,3 +230,19 @@ mmdetection/configs/*
 mmdetection/tools/*
 !mmdetection/tools/train.py
 
+!UniverseNet
+UniverseNet/*
+
+!UniverseNet/configs/
+UniverseNet/configs/*
+
+!UniverseNet/configs/custom
+
+!UniverseNet/run.sh
+/wandb
+/work_dirs
+
+!UniverseNet/tools/
+UniverseNet/tools/*
+!UniverseNet/tools/train.py
+
