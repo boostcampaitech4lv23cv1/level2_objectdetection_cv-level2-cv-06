@@ -1,7 +1,7 @@
 _base_ = [
     "../_base_/best_aug.py",
     "../_base_/runtime.py",
-    "../_base_/cosine_restart_scheduler.py",
+    "../_base_/cosine_annealing.py",
 ]
 
 pretrained = "https://github.com/SwinTransformer/storage/releases/download/v2.0.0/swinv2_large_patch4_window12_192_22k.pth"  # noqa
