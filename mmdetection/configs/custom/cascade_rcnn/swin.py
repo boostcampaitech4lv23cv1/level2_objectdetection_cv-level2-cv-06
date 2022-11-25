@@ -1,4 +1,8 @@
-_base_ = ["../custom/custom_dataset.py", "../_base_/default_runtime.py"]
+_base_ = [
+    "../_base_/aug_test.py",
+    "../_base_/runtime.py",
+    "../_base_/base_scheduler.py",
+]
 
 pretrained = "https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_base_patch4_window7_224.pth"  # noqa
 
@@ -215,32 +219,4 @@ model = dict(
     ),
 )
 
-
-optimizer = dict(
-    type="AdamW",
-    lr=0.0001,
-    betas=(0.9, 0.999),
-    weight_decay=0.05,
-    paramwise_cfg=dict(
-        custom_keys=dict(
-            absolute_pos_embed=dict(decay_mult=0.0),
-            relative_position_bias_table=dict(decay_mult=0.0),
-            norm=dict(decay_mult=0.0),
-        )
-    ),
-)
-optimizer_config = dict(grad_clip=None)
-lr_config = dict(
-    policy="step",
-    warmup="linear",
-    warmup_iters=1000,
-    warmup_ratio=0.001,
-    step=[8, 15],
-)
-
-
-# fp16 = dict(loss_scale="dynamic")
-runner = dict(
-    type="EpochBasedRunner",  # Type of runner to use (i.e. IterBasedRunner or EpochBasedRunner)
-    max_epochs=20,
-)  # Runner that runs the workflow in total max_epochs. For IterBasedRunner use `max_iters`
+fp16 = dict(loss_scale="dynamic")
