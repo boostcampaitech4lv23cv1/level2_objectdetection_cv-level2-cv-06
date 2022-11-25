@@ -137,7 +137,7 @@ def main():
     if args.batch_size is not None:
         cfg.data.samples_per_gpu = args.batch_size
     if args.epochs is not None:
-        cfg.runner.max_epochs = args.epochs        
+        cfg.runner.max_epochs = args.epochs
     if check_timm(args, cfg):
         cfg.model.model_name = args.timm
 
