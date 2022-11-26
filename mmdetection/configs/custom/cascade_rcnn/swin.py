@@ -45,7 +45,13 @@ model = dict(
             target_means=[0.0, 0.0, 0.0, 0.0],
             target_stds=[1.0, 1.0, 1.0, 1.0],
         ),
-        loss_cls=dict(type="CrossEntropyLoss", use_sigmoid=True, loss_weight=1.0),
+        loss_cls=dict(
+            type="LabelSmoothLoss",
+            label_smooth_val=0.1,
+            num_classes=10,
+            loss_weight=1.0,
+        ),
+        # loss_cls=dict(type="CrossEntropyLoss", use_sigmoid=True, loss_weight=1.0),
         # loss_cls=dict(type="FocalLoss", use_sigmoid=True, loss_weight=1.0),
         loss_bbox=dict(type="SmoothL1Loss", beta=1.0 / 9.0, loss_weight=1.0),
     ),
@@ -72,8 +78,14 @@ model = dict(
                     target_stds=[0.1, 0.1, 0.2, 0.2],
                 ),
                 reg_class_agnostic=True,
+                # loss_cls=dict(
+                #    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
+                # ),
                 loss_cls=dict(
-                    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
+                    type="LabelSmoothLoss",
+                    label_smooth_val=0.1,
+                    num_classes=10,
+                    loss_weight=1.0,
                 ),
                 # loss_cls=dict(type="FocalLoss", use_sigmoid=False, loss_weight=1.0),
                 loss_bbox=dict(type="SmoothL1Loss", beta=1.0, loss_weight=1.0),
@@ -90,8 +102,14 @@ model = dict(
                     target_stds=[0.05, 0.05, 0.1, 0.1],
                 ),
                 reg_class_agnostic=True,
+                # loss_cls=dict(
+                #    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
+                # ),
                 loss_cls=dict(
-                    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
+                    type="LabelSmoothLoss",
+                    label_smooth_val=0.1,
+                    num_classes=10,
+                    loss_weight=1.0,
                 ),
                 # loss_cls=dict(type="FocalLoss", use_sigmoid=False, loss_weight=1.0),
                 loss_bbox=dict(type="SmoothL1Loss", beta=1.0, loss_weight=1.0),
@@ -109,8 +127,14 @@ model = dict(
                 ),
                 reg_class_agnostic=True,
                 loss_cls=dict(
-                    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
+                    type="LabelSmoothLoss",
+                    label_smooth_val=0.1,
+                    num_classes=10,
+                    loss_weight=1.0,
                 ),
+                # loss_cls=dict(
+                #    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
+                # ),
                 # loss_cls=dict(type="FocalLoss", use_sigmoid=False, loss_weight=1.0),
                 loss_bbox=dict(type="SmoothL1Loss", beta=1.0, loss_weight=1.0),
             ),
@@ -212,7 +236,7 @@ model = dict(
             min_bbox_size=0,
         ),
         rcnn=dict(
-            score_thr=0.05,
+            score_thr=0.00,
             nms=dict(type="soft_nms", iou_threshold=0.5),
             max_per_img=100,
         ),
