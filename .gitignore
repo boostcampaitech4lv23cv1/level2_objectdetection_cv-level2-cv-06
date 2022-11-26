@@ -212,3 +212,13 @@ cython_debug/
 
 # dataset
 /dataset
+
+/convert2Yolo
+/mmdetection
+/runs
+/wandb
+/yolo*
+streamlit/repair.json
+/work_dirs
+/stratify_dataset
+manifest.txt
