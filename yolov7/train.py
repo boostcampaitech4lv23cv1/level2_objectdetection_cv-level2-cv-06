@@ -636,7 +636,7 @@ def train(hyp, opt, device, tb_writer=None):
                 "train/cls_loss",  # train loss
                 "metrics/precision",
                 "metrics/recall",
-                "metrics/mAP_0.5",
+                "val/bbox_mAP_50",
                 "metrics/mAP_0.5:0.95",
                 "val/box_loss",
                 "val/obj_loss",
@@ -929,7 +929,6 @@ if __name__ == "__main__":
         )  # reinstate
         logger.info("Resuming training from %s" % ckpt)
     else:
-        # opt.hyp = opt.hyp or ('hyp.finetune.yaml' if opt.weights else 'hyp.scratch.yaml')
         opt.data, opt.cfg, opt.hyp = (
             check_file(opt.data),
             check_file(opt.cfg),
