@@ -270,6 +270,7 @@ yolov7/*
 
 !yolov7/run/
 !yolov7/train.py
+!yolov7/test.py
 
 !yolov7/utils/
 yolov7/utils/*
@@ -281,7 +282,11 @@ yolo_*/
 yolov7/utils/wandb_logging/*
 !yolov7/utils/wandb_logging/wandb_utils.py
 
-runs/
+!yolov7/runs/
+yolov7/runs/*
+!yolov7/runs/convert2csv.py
+
+
 *.cache
 *.pt
 streamlit/repair.json
