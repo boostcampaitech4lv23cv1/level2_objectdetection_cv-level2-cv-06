@@ -48,7 +48,7 @@ model = dict(
         loss_cls=dict(
             type="LabelSmoothLoss",
             label_smooth_val=0.1,
-            num_classes=2,
+            # num_classes=2,
             loss_weight=1.0,
         ),
         # loss_cls=dict(type="CrossEntropyLoss", use_sigmoid=True, loss_weight=1.0),
@@ -83,9 +83,9 @@ model = dict(
                 # ),
                 loss_cls=dict(
                     type="LabelSmoothLoss",
-                    label_smooth_val=0.1,
+                    label_smooth_val=0.15,
                     mode="multi_label",
-                    num_classes=10,
+                    num_classes=11,
                     loss_weight=1.0,
                 ),
                 # loss_cls=dict(type="FocalLoss", use_sigmoid=False, loss_weight=1.0),
@@ -108,9 +108,9 @@ model = dict(
                 # ),
                 loss_cls=dict(
                     type="LabelSmoothLoss",
-                    label_smooth_val=0.1,
+                    label_smooth_val=0.15,
                     mode="multi_label",
-                    num_classes=10,
+                    num_classes=11,
                     loss_weight=1.0,
                 ),
                 # loss_cls=dict(type="FocalLoss", use_sigmoid=False, loss_weight=1.0),
@@ -130,9 +130,9 @@ model = dict(
                 reg_class_agnostic=True,
                 loss_cls=dict(
                     type="LabelSmoothLoss",
-                    label_smooth_val=0.1,
+                    label_smooth_val=0.15,
                     mode="multi_label",
-                    num_classes=10,
+                    num_classes=11,
                     loss_weight=1.0,
                 ),
                 # loss_cls=dict(
