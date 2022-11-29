@@ -747,7 +747,7 @@ class Model(nn.Module):
         self.info()
         logger.info("")
 
-    def forward(self, x, augment=True, profile=False):
+    def forward(self, x, augment=False, profile=False):
         if augment:
             return self.forward_augment(x)  # augmented inference, None
         else:
@@ -755,8 +755,8 @@ class Model(nn.Module):
 
     def forward_augment(self, x):
         img_size = x.shape[-2:]  # height, width
-        s = [1, 0.83, 0.67]  # scales
-        f = [None, 3, None]  # flips (2-ud, 3-lr)
+        s = [1, 1, 1, 0.83, 0.83, 0.83, 0.67, 0.67, 0.67]  # scales
+        f = [None, 3, 2, None, 3, 2, None, 3, 2]  # flips (2-ud, 3-lr)
         y = []  # outputs
         for si, fi in zip(s, f):
             xi = scale_img(x.flip(fi) if fi else x, si, gs=int(self.stride.max()))
