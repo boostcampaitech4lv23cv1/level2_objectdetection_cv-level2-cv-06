@@ -290,3 +290,9 @@ yolov7/runs/*
 *.cache
 *.pt
 streamlit/repair.json
+
+runs/
+
+!yolov7/models/
+yolov7/models/*
+!yolov7/models/yolo.py
