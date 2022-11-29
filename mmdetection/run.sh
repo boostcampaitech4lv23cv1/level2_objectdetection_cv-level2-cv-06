@@ -24,6 +24,9 @@
 #     --batch_size 16 \
 #     --epochs 40
 
+# python tools/train.py configs/custom/cascade_rcnn/swinv2_large.py \
+# --wandb_nm cascade_swinv2_large_augmentation --wandb_tag cascade augmentation swinv2_large
+
 python tools/train.py \
     configs/custom/vfnet/vfnet_swin_fpn.py \
     --work-dir ../work_dirs/vfnet_swin_fpn_batch_8 \
@@ -32,3 +35,7 @@ python tools/train.py \
     --wandb_tag vfnet swin fpn \
     --batch_size 8 \
     --epochs 20
+
+
+
+
