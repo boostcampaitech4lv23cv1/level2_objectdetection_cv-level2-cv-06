@@ -296,3 +296,5 @@ runs/
 !yolov7/models/
 yolov7/models/*
 !yolov7/models/yolo.py
+
+*.tar.gz
