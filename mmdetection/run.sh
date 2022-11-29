@@ -29,12 +29,12 @@
 
 python tools/train.py \
     configs/custom/vfnet/vfnet_swin_fpn.py \
-    --work-dir ../work_dirs/vfnet_swin_fpn_batch_4 \
+    --work-dir ../work_dirs/vfnet_swin_fpn_batch_2 \
     --seed 42 \
-    --wandb_nm VFnet_swin_fpn_batch_4 \
+    --wandb_nm VFnet_swin_fpn_batch_2 \
     --wandb_tag vfnet swin fpn \
-    --batch_size 4 \
-    --epochs 80
+    --batch_size 2 \
+    --epochs 50
 
 
 
