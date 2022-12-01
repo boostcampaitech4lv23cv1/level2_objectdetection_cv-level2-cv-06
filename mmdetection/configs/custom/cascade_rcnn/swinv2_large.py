@@ -1,27 +1,35 @@
-# _base_ = ["../custom/custom_dataset.py", "../_base_/default_runtime.py"]
 _base_ = [
-    "../_base_/dataset.py",
-    "../_base_/default_schedule.py",
+    "../_base_/best_aug.py",
     "../_base_/runtime.py",
+    "../_base_/cosine_restart_scheduler.py",
 ]
 
-# pretrained = "https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_base_patch4_window7_224.pth"  # noqa
+pretrained = "https://github.com/SwinTransformer/storage/releases/download/v2.0.0/swinv2_large_patch4_window12_192_22k.pth"  # noqa
 
 model = dict(
     type="CascadeRCNN",
     backbone=dict(
-        type="ResNet",
-        depth=101,
-        num_stages=4,
+        # _delete_=True,
+        type="SwinTransformerV2",
+        pretrain_img_size=192,
+        embed_dim=192,
+        depths=[2, 2, 18, 2],
+        num_heads=[6, 12, 24, 48],
+        window_size=12,
+        mlp_ratio=4.0,
+        qkv_bias=True,
+        drop_rate=0.0,
+        attn_drop_rate=0.0,
+        drop_path_rate=0.2,
+        ape=False,
+        patch_norm=True,
         out_indices=(0, 1, 2, 3),
-        frozen_stages=1,
-        norm_cfg=dict(type="BN", requires_grad=True),
-        norm_eval=True,
-        style="pytorch",
-        init_cfg=dict(type="Pretrained", checkpoint="torchvision://resnet101"),
+        use_checkpoint=False,
+        pretrained_window_sizes=[0, 0, 0, 0],
+        init_cfg=dict(type="Pretrained", checkpoint=pretrained),
     ),
     neck=dict(
-        type="FPN", in_channels=[256, 512, 1024, 2048], out_channels=256, num_outs=5
+        type="FPN", in_channels=[192, 384, 768, 1536], out_channels=256, num_outs=5
     ),
     rpn_head=dict(
         type="RPNHead",
@@ -38,13 +46,7 @@ model = dict(
             target_means=[0.0, 0.0, 0.0, 0.0],
             target_stds=[1.0, 1.0, 1.0, 1.0],
         ),
-        loss_cls=dict(
-            type="LabelSmoothLoss",
-            label_smooth_val=0.1,
-            num_classes=10,
-            loss_weight=1.0,
-        ),
-        # loss_cls=dict(type="CrossEntropyLoss", use_sigmoid=True, loss_weight=1.0),
+        loss_cls=dict(type="CrossEntropyLoss", use_sigmoid=True, loss_weight=1.0),
         # loss_cls=dict(type="FocalLoss", use_sigmoid=True, loss_weight=1.0),
         loss_bbox=dict(type="SmoothL1Loss", beta=1.0 / 9.0, loss_weight=1.0),
     ),
@@ -71,14 +73,8 @@ model = dict(
                     target_stds=[0.1, 0.1, 0.2, 0.2],
                 ),
                 reg_class_agnostic=True,
-                # loss_cls=dict(
-                #    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
-                # ),
                 loss_cls=dict(
-                    type="LabelSmoothLoss",
-                    label_smooth_val=0.1,
-                    num_classes=10,
-                    loss_weight=1.0,
+                    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
                 ),
                 # loss_cls=dict(type="FocalLoss", use_sigmoid=False, loss_weight=1.0),
                 loss_bbox=dict(type="SmoothL1Loss", beta=1.0, loss_weight=1.0),
@@ -95,14 +91,8 @@ model = dict(
                     target_stds=[0.05, 0.05, 0.1, 0.1],
                 ),
                 reg_class_agnostic=True,
-                # loss_cls=dict(
-                #    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
-                # ),
                 loss_cls=dict(
-                    type="LabelSmoothLoss",
-                    label_smooth_val=0.1,
-                    num_classes=10,
-                    loss_weight=1.0,
+                    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
                 ),
                 # loss_cls=dict(type="FocalLoss", use_sigmoid=False, loss_weight=1.0),
                 loss_bbox=dict(type="SmoothL1Loss", beta=1.0, loss_weight=1.0),
@@ -120,14 +110,8 @@ model = dict(
                 ),
                 reg_class_agnostic=True,
                 loss_cls=dict(
-                    type="LabelSmoothLoss",
-                    label_smooth_val=0.1,
-                    num_classes=10,
-                    loss_weight=1.0,
+                    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
                 ),
-                # loss_cls=dict(
-                #    type="CrossEntropyLoss", use_sigmoid=False, loss_weight=1.0
-                # ),
                 # loss_cls=dict(type="FocalLoss", use_sigmoid=False, loss_weight=1.0),
                 loss_bbox=dict(type="SmoothL1Loss", beta=1.0, loss_weight=1.0),
             ),
@@ -235,8 +219,5 @@ model = dict(
         ),
     ),
 )
-<<<<<<< HEAD:mmdetection/configs/custom/cascade_rcnn/cascade_r101_fpn.py
-=======
 
 fp16 = dict(loss_scale="dynamic")
->>>>>>> DEV/main:mmdetection/configs/custom/cascade_rcnn/swin.py

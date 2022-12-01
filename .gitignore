@@ -230,6 +230,23 @@ mmdetection/configs/*
 mmdetection/tools/*
 !mmdetection/tools/train.py
 
+
+!UniverseNet
+UniverseNet/*
+
+!UniverseNet/configs/
+UniverseNet/configs/*
+
+!UniverseNet/configs/custom
+
+!UniverseNet/run.sh
+/wandb
+/work_dirs
+
+!UniverseNet/tools/
+UniverseNet/tools/*
+!UniverseNet/tools/train.py
+
 /yolov7
 
 !mmdetection/mmdet/
@@ -242,5 +259,28 @@ mmdetection/mmdet/core/*
 mmdetection/mmdet/core/hook/*
 !mmdetection/mmdet/core/hook/wandblogger_hook.py
 
-/convert2Yolo
+!convert2Yolo/
+convert2Yolo/*
+!convert2Yolo/make_yolo_format.py
+
 manifest.txt
+
+!yolov7/
+yolov7/*
+
+!yolov7/run/
+!yolov7/train.py
+
+!yolov7/utils/
+yolov7/utils/*
+
+!yolov7/utils/google_utils.py
+yolo_*/
+
+!yolov7/utils/wandb_logging/
+yolov7/utils/wandb_logging/*
+!yolov7/utils/wandb_logging/wandb_utils.py
+
+runs/
+*.cache
+*.pt
