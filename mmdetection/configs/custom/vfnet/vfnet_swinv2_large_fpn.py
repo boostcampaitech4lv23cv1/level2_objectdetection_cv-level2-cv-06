@@ -4,7 +4,6 @@ _base_ = [
     "../_base_/cosine_restart_scheduler.py",
 ]
 
-# pretrained = "https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_base_patch4_window7_224.pth"  # noqa
 pretrained = "https://github.com/SwinTransformer/storage/releases/download/v2.0.0/swinv2_large_patch4_window12_192_22k.pth"
 # model settings
 model = dict(
