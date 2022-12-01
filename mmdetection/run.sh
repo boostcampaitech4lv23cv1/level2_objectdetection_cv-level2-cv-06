@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # # python tools/train.py configs/custom/cascade_rcnn/pvt_b1.py --work-dir work_dirs/cascade_rcnn_pvt_b1 --seed 42
 
 <<<<<<< HEAD
@@ -39,4 +40,14 @@ python tools/train.py configs/custom/cascade_rcnn/swinv2_large.py \
 
 
 
+>>>>>>> DEV/main
+=======
+python tools/train.py \
+    configs/custom/vfnet/vfnet_swinv2_large_fpn.py \
+    --work-dir ./work_dirs/vfnet_swinv2_large_fpn \
+    --seed 42 \
+    --wandb_nm VFnet_swinv2_large_fpn \
+    --wandb_tag vfnet swin fpn \
+    --batch_size 2 \
+    --epochs 50
 >>>>>>> DEV/main
