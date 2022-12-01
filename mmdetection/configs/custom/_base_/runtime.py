@@ -7,9 +7,9 @@ log_config = dict(
         dict(
             type="MMDetWandbHook",
             init_kwargs=dict(
-                project="bcaitech4_object_detection",
-                entity="cv-noops",
-                name="CascadeRCNN_eff",
+                project="test",
+                entity="bsh_671",
+                name="vfnet",
             ),
             interval=10,
             log_checkpoint=True,
