@@ -1,15 +1,15 @@
 checkpoint_config = dict(interval=5)
 # yapf:disable
 log_config = dict(
-    interval=500,
+    interval=50,
     hooks=[
         dict(type="TextLoggerHook"),
         dict(
             type="MMDetWandbHook",
             init_kwargs=dict(
-                project="test",
-                entity="bsh_671",
-                name="vfnet",
+                project="bcaitech4_object_detection",
+                entity="cv-noops",
+                name="VFNet_r50_fpn",
             ),
             interval=10,
             log_checkpoint=True,
