@@ -12,19 +12,17 @@ optimizer = dict(
     ),
 )
 optimizer_config = dict(grad_clip=None)
-runner = dict(
-    type="EpochBasedRunner",
-    max_epochs=50,
-)
-
-
 lr_config = dict(
-    policy="CosineRestart",
+    policy="step",
     warmup="linear",
-    warmup_iters=5871,
+    warmup_iters=1000,
     warmup_ratio=0.001,
-    periods=[19570, 19570, 19570, 19570, 19570],
-    restart_weights=[1, 0.8, 0.65, 0.55, 0.5],
-    by_epoch=False,
-    min_lr=5e-6,
+    step=[8, 15],
 )
+
+
+# fp16 = dict(loss_scale="dynamic")
+runner = dict(
+    type="EpochBasedRunner",  # Type of runner to use (i.e. IterBasedRunner or EpochBasedRunner)
+    max_epochs=20,
+)  # Runner that runs the workflow in total max_epochs. For IterBasedRunner use `max_iters`
