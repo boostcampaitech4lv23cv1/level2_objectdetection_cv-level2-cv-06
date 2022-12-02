@@ -299,6 +299,9 @@ yolov7/models/*
 
 *.tar.gz
 
+!yolov7/data/
+yolov7/data/*
+!yolov7/data/hyp.custom.yaml
 !yolov5
 yolov5/*
 
