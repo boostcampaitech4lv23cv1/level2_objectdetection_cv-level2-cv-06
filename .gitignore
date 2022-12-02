@@ -298,3 +298,7 @@ yolov7/models/*
 !yolov7/models/yolo.py
 
 *.tar.gz
+
+!yolov7/data/
+yolov7/data/*
+!yolov7/data/hyp.custom.yaml
