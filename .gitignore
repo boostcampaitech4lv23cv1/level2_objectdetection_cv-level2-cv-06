@@ -212,8 +212,6 @@ cython_debug/
 
 # dataset
 /dataset
-stratify_dataset/
-
 !mmdetection/
 mmdetection/*
 
@@ -316,3 +314,13 @@ yolov5/runs/*
 !yolov5/run.sh
 !yolov5/test.sh
 !yolov5/convert.sh
+
+/convert2Yolo
+/mmdetection
+/runs
+/wandb
+/yolo*
+streamlit/repair.json
+/work_dirs
+/stratify_dataset
+manifest.txt
