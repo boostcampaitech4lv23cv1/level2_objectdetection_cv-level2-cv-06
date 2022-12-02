@@ -313,3 +313,15 @@ yolov5/runs/*
 !yolov5/run.sh
 !yolov5/test.sh
 !yolov5/convert.sh
+
+!yolov6
+yolov6/*
+
+!yolov6/data/
+yolov6/data/*
+
+!yolov6/runs/
+yolov6/runs/*
+
+!yolov6/run_train.sh
+!yolov6/run_eval.sh
