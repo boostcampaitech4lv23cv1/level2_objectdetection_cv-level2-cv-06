@@ -26,7 +26,7 @@
 >  ```
 
 ---
-# 프로젝트 report
+# 프로젝트 Report
 바야흐로 대량 생산, 대량 소비의 시대. 우리는 많은 물건이 대량으로 생산되고, 소비되는 시대를 살고 있습니다. 하지만 이러한 문화는 '쓰레기 대란', '매립지 부족'과 같은 여러 사회 문제를 낳고 있습니다.
 
 ![Untitled](https://user-images.githubusercontent.com/77565951/206111215-d4dc677e-1ba5-4e37-99ee-50a1c5b40f58.png)
@@ -44,33 +44,35 @@
 | 팀원 / 역할 | streamlit | MMDetection | YOLO | Paper Review |
 | --- | --- | --- | --- | --- |
 | 오주헌 | Augmentation,EDA Tab | VFNet, DETR, ATSS | YOLOv7, YOLOv5 | YOLOv7 |
-| 강민수 |  | Swinv2
-Cascade-Rcnn
-ATSS
-Parameter Tuning
-WBF | WBF | model soup  |
-| 신성윤 | Color Distribution EDA Tab | Faster R-CNN
-Cascade R-CNN
-VFNet
-EfficientDet | YOLOv5 | Cascade R-CNN |
-| 나성근 | EDA 탭 제작 /  | Centernet
-label smooth loss | YOLOv5 학습 | WBF |
+| 강민수 |  | Swinv2, Cascade-Rcnn, ATSS, Parameter Tuning, WBF | WBF | model soup  |
+| 신성윤 | Color Distribution EDA Tab | Faster R-CNN, Cascade R-CNN, VFNet, EfficientDet | YOLOv5 | Cascade R-CNN |
+| 나성근 | EDA 탭 제작 /  | Centernet, label smooth loss | YOLOv5 학습 | WBF |
 | 박시형 | Dataset 수정 툴, Class 분포 Tab | DETR, VFnet, Cornernet | Yolov7 | FPN |
 
-EX) Streamlit Data Label 수정
-<img src="https://user-images.githubusercontent.com/77565951/206111428-eb35acd5-7e3f-46cf-9eee-af03c351f529.png" width=300 height=300>
+<table>
+<tr>
+<th> Ex) Streamlit Data Label 수정 </th>
+<th> Ex) Streamlit EDA (Bbox_size_prop) </th>
+</tr>
+<tr>
+<td>
 
-![EX) Streamlit EDA (Bbox_size_prop)](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/52a79f8c-2375-453b-bbec-e687235dfada/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2022-12-02_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_2.45.47.png)
+<img src="https://user-images.githubusercontent.com/77565951/206111428-eb35acd5-7e3f-46cf-9eee-af03c351f529.png" width=1345 height=300>
 
-EX) Streamlit EDA (Bbox_size_prop)
+</td>
+<td>
 
-![초기 대회 전략 브레인 스토밍](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ed0b10a6-8169-4e35-a66d-29838758f741/Untitled.png)
+<img width="1345" height=300 src="https://user-images.githubusercontent.com/77565951/206112724-556d38c7-41c6-4cdf-89f2-72232f5d0a3a.png">
+
+</td>
+</tr>
+</table>
 
 초기 대회 전략 브레인 스토밍
-
-![최종 대회 전략](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/84d30816-e899-42db-a359-d1d613b2088c/Untitled.png)
+<img src=https://user-images.githubusercontent.com/77565951/206113197-d0215315-62ee-40f9-a9b9-6afa5a3f6c17.png>
 
 최종 대회 전략
+<img src=https://user-images.githubusercontent.com/77565951/206113187-bbf0dacb-05d6-42d2-8ded-a3d9493ac48b.png>
 
 ### 프로젝트 수행 절차 및 방법
 
@@ -103,28 +105,20 @@ EX) Streamlit EDA (Bbox_size_prop)
         - Backbone: v5 (s,x), v6 (s), v7 (e6e)
 - Augmentation
 
-|  | Geometric (p=1) | Color (p=0.5) | Noise (p=0.4) | Histogram Equalize (p=0.5) |
+|Augmentation  | Geometric (p=1) | Color (p=0.5) | Noise (p=0.4) | Histogram Equalize (p=0.5) |
 | --- | --- | --- | --- | --- |
-| 2stage
-Augmentation | Multi-scailing Training(512~1024 / by 32)
-RandomRotate90 (p=1.0)
-Random Flip (p=0.5) | • Random Brightness Contrast (p=0.5)
-• RGB shift (p=0.5) | • Blur (p=0.5)
-• Gaussian Noise (p=0.5)
-• Image Compression (p=0.5) | • CLAHE  (p=0.5)
-• Saturation (p=0.5)
-• Random Gamma (p=0.5) |
-| 1stage
-Augmentation | configs |  |  |  |
+| 2stage| Multi-scailing Training(512~1024 / by 32), RandomRotate90(p=1.0), Random Flip (p=0.5) | • Random Brightness Contrast (p=0.5), RGB shift (p=0.5) | Blur (p=0.5) Gaussian Noise (p=0.5), Image Compression (p=0.5) | CLAHE  (p=0.5), Saturation (p=0.5), Random Gamma (p=0.5) |
+| 1stage | [Configs](https://github.com/boostcampaitech4lv23cv1/level2_objectdetection_cv-level2-cv-06/blob/main/yolov7/data/hyp.custom.yaml) | -  | -  | -  |
+
+
 - Hyperparameter Tuning
+
 
 |  | Confidence Score Threshold | NMS | Optimizer | LR Scheduler | TTA | Input size |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1stage | 0.001 | 0.5 | SGD | Cosine | Resize: 1,0.83,0.67
-Flip: Horizontal, Vertical | 1280 |
-| 2stage | 0.00 | 0.5 | Adamw
-(lr=1e-4) | CosineAnnealing
-(min_lr=5e-6) + warmup(3 epoch) | Resize: 512x512, 640x640, 768x768, 896x896, 1024x1024, randomflip | 1024 |
+| 1stage | 0.001 | 0.5 | SGD | Cosine | Resize: 1,0.83,0.67 Flip: Horizontal, Vertical | 1280 |
+| 2stage | 0.00 | 0.5 | Adamw (lr=1e-4) | CosineAnnealing (min_lr=5e-6) + warmup(3 epoch) | Resize: 512x512, 640x640, 768x768, 896x896, 1024x1024, randomflip | 1024 | 
+
 - Ensemble(Final submission)
     - Weighted Box Fusion
         
@@ -147,6 +141,7 @@ Flip: Horizontal, Vertical | 1280 |
 | YOLOv7_e6e | 0.638 |
 | 5-Fold YOLOv7_e6e(TTA) + 5-Fold swinv2 Cascade (WBF) | 0.7064 |
 | 5-Fold YOLOv7_e6e(TTA)+5-Fold YOLOv7_e6e(wo TTA)+5-Fold swinv2 Cascade | 0.7075 |
+
 - 최종 제출: Public:0.7075(3rd) / Private:0.6970(3rd)
 
 ### 자체 평가 의견
