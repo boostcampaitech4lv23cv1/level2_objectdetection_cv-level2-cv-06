@@ -29,7 +29,7 @@
 # 프로젝트 report
 바야흐로 대량 생산, 대량 소비의 시대. 우리는 많은 물건이 대량으로 생산되고, 소비되는 시대를 살고 있습니다. 하지만 이러한 문화는 '쓰레기 대란', '매립지 부족'과 같은 여러 사회 문제를 낳고 있습니다.
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/cae4a605-5922-4459-a474-0a1e9e55843b/Untitled.png)
+![Untitled](https://user-images.githubusercontent.com/77565951/206111215-d4dc677e-1ba5-4e37-99ee-50a1c5b40f58.png)
 
 분리수거는 이러한 환경 부담을 줄일 수 있는 방법 중 하나입니다. 잘 분리배출 된 쓰레기는 자원으로서 가치를 인정받아 재활용되지만, 잘못 분리배출 되면 그대로 폐기물로 분류되어 매립 또는 소각되기 때문입니다.
 
@@ -57,9 +57,8 @@ EfficientDet | YOLOv5 | Cascade R-CNN |
 label smooth loss | YOLOv5 학습 | WBF |
 | 박시형 | Dataset 수정 툴, Class 분포 Tab | DETR, VFnet, Cornernet | Yolov7 | FPN |
 
-![EX) Streamlit Data Label 수정](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/008fec0d-357f-4a70-85b9-107365892385/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2022-11-19_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_1.48.09.png)
-
 EX) Streamlit Data Label 수정
+<img src="https://user-images.githubusercontent.com/77565951/206111428-eb35acd5-7e3f-46cf-9eee-af03c351f529.png" width=300 height=300>
 
 ![EX) Streamlit EDA (Bbox_size_prop)](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/52a79f8c-2375-453b-bbec-e687235dfada/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2022-12-02_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_2.45.47.png)
 
